@@ -1,10 +1,10 @@
 package entities;
 
-import javafx.scene.image.Image;
+import graphics.Sprite;
 
 public class Brick extends Entity {
-    public Brick(double x, double y, Image img) {
-        super(x, y, img);
+    public Brick(double x, double y, Sprite sprite) {
+        super(x, y, sprite);
     }
 
     @Override

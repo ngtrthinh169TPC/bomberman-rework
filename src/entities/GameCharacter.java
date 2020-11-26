@@ -1,21 +1,16 @@
 package entities;
 
-import javafx.scene.image.Image;
+import graphics.Sprite;
 
 import java.util.ArrayList;
 
 public abstract class GameCharacter extends Entity {
-    //protected double xCentre;
-    //protected double yCentre;
-
     protected double moveSpeed = 0;
     protected double rightVelocity;
     protected double downVelocity;
 
-    public GameCharacter(double x, double y, Image img) {
-        super(x, y, img);
-        //this.xCentre = xAxis + Sprite.SCALED_SIZE * 0.5;
-        //this.yCentre = yAxis + Sprite.SCALED_SIZE * 0.5;
+    public GameCharacter(double x, double y, Sprite sprite) {
+        super(x, y, sprite);
         this.rightVelocity = 0;
         this.downVelocity = 0;
     }

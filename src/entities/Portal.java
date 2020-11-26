@@ -1,10 +1,10 @@
 package entities;
 
-import javafx.scene.image.Image;
+import graphics.Sprite;
 
 public class Portal extends Entity {
-    public Portal(int x, int y, Image img) {
-        super(x, y, img);
+    public Portal(int x, int y, Sprite sprite) {
+        super(x, y, sprite);
     }
 
     @Override

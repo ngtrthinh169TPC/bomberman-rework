@@ -14,12 +14,16 @@ public class Maze {
     public static int HEIGHT;
 
     private final List<Bomber> players = new ArrayList<>();
-    private final List<Entity> entities = new ArrayList<>();
-    private final List<StillObject> stillObjects = new ArrayList<>();
+    private final List<GameCharacter> enemies = new ArrayList<>();
+    private final List<Entity> grasses = new ArrayList<>();
+    private final List<Entity> blocks = new ArrayList<>(); // Bricks and Walls
+    private final List<Entity> entities = new ArrayList<>(); // Anything else
+
+    //private final List<Entity> stillObjects = new ArrayList<>();
 
     public Maze(int level) {
         try {
-            File file = new File("res/levels/Level1.txt");
+            File file = new File("res/levels/Level" + level + ".txt");
             Scanner sc = new Scanner(file);
             int currentLevel = sc.nextInt();
             if (currentLevel != level) {
@@ -33,29 +37,30 @@ public class Maze {
             for (int i = 0; i < HEIGHT; ++ i) {
                 currentLine = sc.nextLine();
                 for (int j = 0; j < WIDTH; ++ j) {
-                    stillObjects.add(new Grass(j, i, Sprite.grass.getFxImage()));
+                    grasses.add(new Grass(j, i, Sprite.grass));
                     switch (currentLine.charAt(j)) {
                         case '#':
-                            stillObjects.add(new Wall(j, i, Sprite.wall.getFxImage()));
+                            blocks.add(new Wall(j, i, Sprite.wall));
                             break;
                         case '*':
-                            entities.add(new Brick(j, i, Sprite.brick.getFxImage()));
+                            blocks.add(new Brick(j, i, Sprite.brick));
                             break;
                         case 'x':
-                            entities.add(new Portal(j, i, Sprite.portal.getFxImage()));
+                            entities.add(new Portal(j, i, Sprite.portal));
                             break;
                         case 'p':
-                            players.add(
-                                    new Bomber(j, i, Sprite.bomber_right.get(0).getFxImage()));
+                            players.add(new Bomber(j, i, Sprite.bomber_right.get(0)));
+                            break;
+                        case '1':
+                            enemies.add(new Ballom(j, i, Sprite.ballom_left.get(0)));
+                            break;
+                        case '2':
+                            enemies.add(new Oneal(j, i, Sprite.oneal_left.get(0)));
                             break;
                         default:
                             break;
                     }
                 }
-            }
-            while (sc.hasNextLine()) {
-                String data = sc.nextLine();
-                System.out.println(data);
             }
             sc.close();
         } catch (FileNotFoundException e) {
@@ -73,8 +78,10 @@ public class Maze {
 
     public void render(Canvas canvas, GraphicsContext gc) {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        stillObjects.forEach(g -> g.render(gc));
+        grasses.forEach(g -> g.render(gc));
+        blocks.forEach(g -> g.render(gc));
         entities.forEach(g -> g.render(gc));
         players.forEach(g -> g.render(gc));
+        enemies.forEach(g -> g.render(gc));
     }
 }

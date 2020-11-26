@@ -1,7 +1,6 @@
 package entities;
 
 import graphics.Sprite;
-import javafx.scene.image.Image;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,8 +16,8 @@ public class Bomber extends GameCharacter {
     private int changeTimer = 0;
     private String direction = "RIGHT";
 
-    public Bomber(double x, double y, Image img) {
-        super(x, y, img);
+    public Bomber(double x, double y, Sprite sprite) {
+        super(x, y, sprite);
         this.moveSpeed = BOMBER_SPEED;
     }
 

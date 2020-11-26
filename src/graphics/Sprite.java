@@ -31,6 +31,14 @@ public class Sprite {
         load();
     }
 
+    public int getRealWidth() {
+        return realWidth;
+    }
+
+    public int getRealHeight() {
+        return realHeight;
+    }
+
     private void load() {
         for (int y = 0; y < SIZE; y++) {
             for (int x = 0; x < SIZE; x++) {
@@ -38,28 +46,6 @@ public class Sprite {
             }
         }
     }
-
-    /*
-    public static Sprite movingSprite(Sprite normal, Sprite x1, Sprite x2, int animate, int time) {
-        int calc = animate % time;
-        int diff = time / 3;
-
-        if(calc < diff) {
-            return normal;
-        }
-
-        if(calc < diff * 2) {
-            return x1;
-        }
-
-        return x2;
-    }
-
-    public static Sprite movingSprite(Sprite x1, Sprite x2, int animate, int time) {
-        int diff = time / 2;
-        return (animate % time > diff) ? x1 : x2;
-    }
-    */
 
     /** Get image of the sprite. **/
     public Image getFxImage() {
@@ -107,12 +93,13 @@ public class Sprite {
     }
 
     /*
-    *-------------------------------------------------------
-    * ENTITIES' SPRITE
-    *-------------------------------------------------------
-    */
+     *-------------------------------------------------------
+     * ENTITIES' SPRITES
+     *-------------------------------------------------------
+     */
 
-    /* Board sprites **/
+    /* Board objects **/
+    /* ----------------------------------------------------------- **/
     public static Sprite portal
             = new Sprite(DEFAULT_SIZE, 4, 0, SpriteSheet.tiles, 14, 14);
     public static Sprite wall
@@ -121,8 +108,16 @@ public class Sprite {
             = new Sprite(DEFAULT_SIZE, 6, 0, SpriteSheet.tiles, 16, 16);
     public static Sprite brick
             = new Sprite(DEFAULT_SIZE, 7, 0, SpriteSheet.tiles, 16, 16);
+    /* ----------------------------------------------------------- **/
 
-    /* Bomber sprites, but wrote to lists **/
+    /*
+     *-------------------------------------------------------
+     * GAME CHARACTERS' SPRITES
+     *-------------------------------------------------------
+     */
+
+    /* Bomber **/
+    /* ----------------------------------------------------------- **/
     public static ArrayList<Sprite> bomber_up = new ArrayList<> (
             Arrays.asList(
                     new Sprite(DEFAULT_SIZE, 0, 0, SpriteSheet.tiles, 12, 16),
@@ -153,41 +148,63 @@ public class Sprite {
             )
     );
 
-    /* Bomber sprites **/
-    public static Sprite bomber_dead1
-            = new Sprite(DEFAULT_SIZE, 4, 2, SpriteSheet.tiles, 14, 16);
-    public static Sprite bomber_dead2
-            = new Sprite(DEFAULT_SIZE, 5, 2, SpriteSheet.tiles, 13, 15);
-    public static Sprite bomber_dead3
-            = new Sprite(DEFAULT_SIZE, 6, 2, SpriteSheet.tiles, 16, 16);
+    public static ArrayList<Sprite> bomber_dead = new ArrayList<>(
+            Arrays.asList(
+                    new Sprite(DEFAULT_SIZE, 4, 2, SpriteSheet.tiles, 14, 16),
+                    new Sprite(DEFAULT_SIZE, 5, 2, SpriteSheet.tiles, 13, 15),
+                    new Sprite(DEFAULT_SIZE, 6, 2, SpriteSheet.tiles, 16, 16)
+            )
+    );
+    /* ----------------------------------------------------------- **/
+
+    /* Ballom **/
+    /* ----------------------------------------------------------- **/
+    public static ArrayList<Sprite> ballom_left = new ArrayList<>(
+            Arrays.asList(
+                    new Sprite(DEFAULT_SIZE, 9, 0, SpriteSheet.tiles, 16, 16),
+                    new Sprite(DEFAULT_SIZE, 9, 1, SpriteSheet.tiles, 16, 16),
+                    new Sprite(DEFAULT_SIZE, 9, 2, SpriteSheet.tiles, 16, 16)
+            )
+    );
+
+    public static ArrayList<Sprite> ballom_right = new ArrayList<>(
+            Arrays.asList(
+                    new Sprite(DEFAULT_SIZE, 10, 0, SpriteSheet.tiles, 16, 16),
+                    new Sprite(DEFAULT_SIZE, 10, 1, SpriteSheet.tiles, 16, 16),
+                    new Sprite(DEFAULT_SIZE, 10, 2, SpriteSheet.tiles, 16, 16)
+            )
+    );
+
+    public static Sprite balloom_dead = new Sprite(DEFAULT_SIZE, 9, 3, SpriteSheet.tiles, 16, 16);
+    /* ----------------------------------------------------------- **/
+
+    /* Oneal **/
+    /* ----------------------------------------------------------- **/
+    public static ArrayList<Sprite> oneal_left = new ArrayList<>(
+            Arrays.asList(
+                    new Sprite(DEFAULT_SIZE, 11, 0, SpriteSheet.tiles, 16, 16),
+                    new Sprite(DEFAULT_SIZE, 11, 1, SpriteSheet.tiles, 16, 16),
+                    new Sprite(DEFAULT_SIZE, 11, 2, SpriteSheet.tiles, 16, 16)
+            )
+    );
+
+    public static ArrayList<Sprite> oneal_right = new ArrayList<>(
+            Arrays.asList(
+                    new Sprite(DEFAULT_SIZE, 12, 0, SpriteSheet.tiles, 16, 16),
+                    new Sprite(DEFAULT_SIZE, 12, 1, SpriteSheet.tiles, 16, 16),
+                    new Sprite(DEFAULT_SIZE, 12, 2, SpriteSheet.tiles, 16, 16)
+            )
+    );
+
+    public static Sprite oneal_dead = new Sprite(DEFAULT_SIZE, 11, 3, SpriteSheet.tiles, 16, 16);
+    /* ----------------------------------------------------------- **/
 
     /*
     |--------------------------------------------------------------------------
     | GameCharacter
     |--------------------------------------------------------------------------
-    //BALLOM
-    public static Sprite balloom_left1 = new Sprite(DEFAULT_SIZE, 9, 0, SpriteSheet.tiles, 16, 16);
-    public static Sprite balloom_left2 = new Sprite(DEFAULT_SIZE, 9, 1, SpriteSheet.tiles, 16, 16);
-    public static Sprite balloom_left3 = new Sprite(DEFAULT_SIZE, 9, 2, SpriteSheet.tiles, 16, 16);
 
-    public static Sprite balloom_right1 = new Sprite(DEFAULT_SIZE, 10, 0, SpriteSheet.tiles, 16, 16);
-    public static Sprite balloom_right2 = new Sprite(DEFAULT_SIZE, 10, 1, SpriteSheet.tiles, 16, 16);
-    public static Sprite balloom_right3 = new Sprite(DEFAULT_SIZE, 10, 2, SpriteSheet.tiles, 16, 16);
-
-    public static Sprite balloom_dead = new Sprite(DEFAULT_SIZE, 9, 3, SpriteSheet.tiles, 16, 16);
-
-    //ONEAL
-    public static Sprite oneal_left1 = new Sprite(DEFAULT_SIZE, 11, 0, SpriteSheet.tiles, 16, 16);
-    public static Sprite oneal_left2 = new Sprite(DEFAULT_SIZE, 11, 1, SpriteSheet.tiles, 16, 16);
-    public static Sprite oneal_left3 = new Sprite(DEFAULT_SIZE, 11, 2, SpriteSheet.tiles, 16, 16);
-
-    public static Sprite oneal_right1 = new Sprite(DEFAULT_SIZE, 12, 0, SpriteSheet.tiles, 16, 16);
-    public static Sprite oneal_right2 = new Sprite(DEFAULT_SIZE, 12, 1, SpriteSheet.tiles, 16, 16);
-    public static Sprite oneal_right3 = new Sprite(DEFAULT_SIZE, 12, 2, SpriteSheet.tiles, 16, 16);
-
-    public static Sprite oneal_dead = new Sprite(DEFAULT_SIZE, 11, 3, SpriteSheet.tiles, 16, 16);
-
-    //Doll
+    //Dall
     public static Sprite doll_left1 = new Sprite(DEFAULT_SIZE, 13, 0, SpriteSheet.tiles, 16, 16);
     public static Sprite doll_left2 = new Sprite(DEFAULT_SIZE, 13, 1, SpriteSheet.tiles, 16, 16);
     public static Sprite doll_left3 = new Sprite(DEFAULT_SIZE, 13, 2, SpriteSheet.tiles, 16, 16);
