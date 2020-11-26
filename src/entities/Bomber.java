@@ -6,12 +6,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Bomber extends GameCharacter {
+    private static final int WALK_TIME = 6;
+
     public static final double BOMBER_SPEED = 1.2;
     public static final ArrayList<String> availableCommand = new ArrayList<>(
             Arrays.asList("LEFT", "RIGHT", "UP", "DOWN")
     );
-
-    private static final int WALK_TIME = 6;
 
     private int changeTimer = 0;
     private String direction = "RIGHT";

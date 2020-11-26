@@ -73,7 +73,14 @@ public class Maze {
         players.forEach(b -> b.directionUpdate(keyInput));
 
         entities.forEach(Entity::update);
-        players.forEach(Bomber::update);
+        for (Bomber b : players) {
+            Entity collidedObject = b.collisionDetected(blocks);
+            if (collidedObject == null) {
+                b.update();
+            } else {
+                b.snapCollision(collidedObject);
+            }
+        }
     }
 
     public void render(Canvas canvas, GraphicsContext gc) {
@@ -81,7 +88,7 @@ public class Maze {
         grasses.forEach(g -> g.render(gc));
         blocks.forEach(g -> g.render(gc));
         entities.forEach(g -> g.render(gc));
-        players.forEach(g -> g.render(gc));
         enemies.forEach(g -> g.render(gc));
+        players.forEach(g -> g.render(gc));
     }
 }

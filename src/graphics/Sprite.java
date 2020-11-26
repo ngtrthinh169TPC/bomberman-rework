@@ -11,6 +11,8 @@ public class Sprite {
     public static final int DEFAULT_SIZE = 16;
     public static final int SCALE_RATIO = 2;
     public static final int SCALED_SIZE = DEFAULT_SIZE * SCALE_RATIO;
+    private static final double CORNER_RATIO = 0.3;
+    public static final double CORNER_SNAP = SCALED_SIZE * CORNER_RATIO;
     private static final int TRANSPARENT_COLOR = 0xffff00ff;
     public final int SIZE;
     private final int xAxis;
@@ -122,28 +124,28 @@ public class Sprite {
             Arrays.asList(
                     new Sprite(DEFAULT_SIZE, 0, 0, SpriteSheet.tiles, 12, 16),
                     new Sprite(DEFAULT_SIZE, 0, 1, SpriteSheet.tiles, 12, 16),
-                    new Sprite(DEFAULT_SIZE, 0, 2, SpriteSheet.tiles, 12, 15)
+                    new Sprite(DEFAULT_SIZE, 0, 2, SpriteSheet.tiles, 12, 16)
             )
     );
     public static ArrayList<Sprite> bomber_down = new ArrayList<>(
             Arrays.asList(
-                    new Sprite(DEFAULT_SIZE, 2, 0, SpriteSheet.tiles, 12, 15),
-                    new Sprite(DEFAULT_SIZE, 2, 1, SpriteSheet.tiles, 12, 15),
+                    new Sprite(DEFAULT_SIZE, 2, 0, SpriteSheet.tiles, 12, 16),
+                    new Sprite(DEFAULT_SIZE, 2, 1, SpriteSheet.tiles, 12, 16),
                     new Sprite(DEFAULT_SIZE, 2, 2, SpriteSheet.tiles, 12, 16)
             )
     );
     public static ArrayList<Sprite> bomber_left = new ArrayList<>(
             Arrays.asList(
-                    new Sprite(DEFAULT_SIZE, 3, 0, SpriteSheet.tiles, 10, 15),
-                    new Sprite(DEFAULT_SIZE, 3, 1, SpriteSheet.tiles, 11, 16),
+                    new Sprite(DEFAULT_SIZE, 3, 0, SpriteSheet.tiles, 12, 16),
+                    new Sprite(DEFAULT_SIZE, 3, 1, SpriteSheet.tiles, 12, 16),
                     new Sprite(DEFAULT_SIZE, 3, 2, SpriteSheet.tiles, 12 ,16)
             )
     );
 
     public static ArrayList<Sprite> bomber_right = new ArrayList<>(
             Arrays.asList(
-                    new Sprite(DEFAULT_SIZE, 1, 0, SpriteSheet.tiles, 10, 16),
-                    new Sprite(DEFAULT_SIZE, 1, 1, SpriteSheet.tiles, 11, 16),
+                    new Sprite(DEFAULT_SIZE, 1, 0, SpriteSheet.tiles, 12, 16),
+                    new Sprite(DEFAULT_SIZE, 1, 1, SpriteSheet.tiles, 12, 16),
                     new Sprite(DEFAULT_SIZE, 1, 2, SpriteSheet.tiles, 12, 16)
             )
     );
