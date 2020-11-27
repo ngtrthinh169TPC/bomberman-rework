@@ -114,6 +114,22 @@ public class Sprite {
 
     /*
      *-------------------------------------------------------
+     * BOMBS' SPRITES
+     *-------------------------------------------------------
+     */
+
+    /* ----------------------------------------------------------- **/
+    public static ArrayList<Sprite> bomb = new ArrayList<>(
+            Arrays.asList(
+                    new Sprite(DEFAULT_SIZE, 0, 3, SpriteSheet.tiles, 15, 15),
+                    new Sprite(DEFAULT_SIZE, 1, 3, SpriteSheet.tiles, 13, 15),
+                    new Sprite(DEFAULT_SIZE, 2, 3, SpriteSheet.tiles, 12, 14)
+            )
+    );
+    /* ----------------------------------------------------------- **/
+
+    /*
+     *-------------------------------------------------------
      * GAME CHARACTERS' SPRITES
      *-------------------------------------------------------
      */
@@ -243,13 +259,6 @@ public class Sprite {
     public static Sprite mob_dead1 = new Sprite(DEFAULT_SIZE, 15, 0, SpriteSheet.tiles, 16, 16);
     public static Sprite mob_dead2 = new Sprite(DEFAULT_SIZE, 15, 1, SpriteSheet.tiles, 16, 16);
     public static Sprite mob_dead3 = new Sprite(DEFAULT_SIZE, 15, 2, SpriteSheet.tiles, 16, 16);
-
-    |--------------------------------------------------------------------------
-    | Bomb Sprites
-    |--------------------------------------------------------------------------
-    public static Sprite bomb = new Sprite(DEFAULT_SIZE, 0, 3, SpriteSheet.tiles, 15, 15);
-    public static Sprite bomb_1 = new Sprite(DEFAULT_SIZE, 1, 3, SpriteSheet.tiles, 13, 15);
-    public static Sprite bomb_2 = new Sprite(DEFAULT_SIZE, 2, 3, SpriteSheet.tiles, 12, 14);
 
     |--------------------------------------------------------------------------
     | FlameSegment Sprites

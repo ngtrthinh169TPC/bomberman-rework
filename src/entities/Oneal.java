@@ -10,7 +10,7 @@ public class Oneal extends GameCharacter {
     }
 
     @Override
-    public void directionUpdate(ArrayList<String> input) {
+    public void actionUpdate(ArrayList<String> input) {
 
     }
 }

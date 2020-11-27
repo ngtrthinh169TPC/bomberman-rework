@@ -25,6 +25,14 @@ public abstract class Entity {
         this.realHeight = sprite.getRealHeight() * Sprite.SCALE_RATIO;
     }
 
+    public int getXUnit() {
+        return (int)(xLeft + Sprite.SCALED_SIZE / 2) / Sprite.SCALED_SIZE;
+    }
+
+    public int getYUnit() {
+        return (int)(yTop + Sprite.SCALED_SIZE / 2) / Sprite.SCALED_SIZE;
+    }
+
     public void render(GraphicsContext gc) {
         gc.drawImage(img, xLeft, yTop);
     }

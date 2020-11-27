@@ -6,14 +6,35 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class GameCharacter extends Entity {
+
+    private static final int WALK_TIME = 6;
     protected double moveSpeed = 0;
     protected double rightVelocity;
     protected double downVelocity;
+
+    private int frameTimer = 0;
+    private int frameNumber = 0;
+    private String currentDirection = "RIGHT";
 
     public GameCharacter(double x, double y, Sprite sprite) {
         super(x, y, sprite);
         this.rightVelocity = 0;
         this.downVelocity = 0;
+    }
+
+    public void getNextImg(ArrayList<Sprite> sprites, String direction) {
+        if (direction.equals(currentDirection)) {
+            this.frameTimer ++;
+            if (this.frameTimer >= WALK_TIME) {
+                this.frameTimer %= WALK_TIME;
+                this.frameNumber = (this.frameNumber + 1) % 3;
+            }
+        } else {
+            this.frameTimer = 0;
+            this.frameNumber = 0;
+            this.currentDirection = direction;
+        }
+        this.img = sprites.get(frameNumber).getFxImage();
     }
 
     @Override
@@ -31,9 +52,9 @@ public abstract class GameCharacter extends Entity {
         return null;
     }
 
-    public abstract void directionUpdate(ArrayList<String> input);
+    public abstract void actionUpdate(ArrayList<String> input);
 
-    protected void velocityUpdate(double rv, double dv) {
+    public void velocityUpdate(double rv, double dv) {
         this.rightVelocity = rv;
         this.downVelocity = dv;
     }

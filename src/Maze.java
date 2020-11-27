@@ -6,6 +6,7 @@ import javafx.scene.canvas.GraphicsContext;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -13,10 +14,15 @@ public class Maze {
     public static int WIDTH;
     public static int HEIGHT;
 
+    public static final ArrayList<String> availableCommand = new ArrayList<>(
+            Arrays.asList("LEFT", "RIGHT", "UP", "DOWN", "X", "Z")
+    );
+
     private final List<Bomber> players = new ArrayList<>();
     private final List<GameCharacter> enemies = new ArrayList<>();
     private final List<Entity> grasses = new ArrayList<>();
     private final List<Entity> blocks = new ArrayList<>(); // Bricks and Walls
+    private final List<Bomb> bombs = new ArrayList<>(); // Bombs
     private final List<Entity> entities = new ArrayList<>(); // Anything else
 
     //private final List<Entity> stillObjects = new ArrayList<>();
@@ -70,9 +76,11 @@ public class Maze {
     }
 
     public void update(ArrayList<String> keyInput) {
-        players.forEach(b -> b.directionUpdate(keyInput));
+        inputProcess(keyInput);
 
-        entities.forEach(Entity::update);
+        //enemies.forEach(GameCharacter::update);
+        //blocks.forEach(Entity::update);
+        //entities.forEach(Entity::update);
         for (Bomber b : players) {
             Entity collidedObject = b.collisionDetected(blocks);
             if (collidedObject == null) {
@@ -86,9 +94,55 @@ public class Maze {
     public void render(Canvas canvas, GraphicsContext gc) {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         grasses.forEach(g -> g.render(gc));
-        blocks.forEach(g -> g.render(gc));
         entities.forEach(g -> g.render(gc));
+        bombs.forEach(g -> g.render(gc));
+        blocks.forEach(g -> g.render(gc));
         enemies.forEach(g -> g.render(gc));
         players.forEach(g -> g.render(gc));
+    }
+
+    private void inputProcess(ArrayList<String> keyInput) {
+        keyInput.removeIf(s -> !availableCommand.contains(s));
+        if (keyInput.isEmpty()) {
+            players.get(0).velocityUpdate(0, 0);
+            return;
+        }
+
+        String currentAction = keyInput.get(keyInput.size() - 1);
+
+        switch (currentAction) {
+            case "LEFT":
+                players.get(0).velocityUpdate(-1, 0);
+                players.get(0).getNextImg(Sprite.bomber_left, currentAction);
+                break;
+            case "RIGHT":
+                players.get(0).velocityUpdate(1, 0);
+                players.get(0).getNextImg(Sprite.bomber_right, currentAction);
+                break;
+            case "UP":
+                players.get(0).velocityUpdate(0, -1);
+                players.get(0).getNextImg(Sprite.bomber_up, currentAction);
+                break;
+            case "DOWN":
+                players.get(0).velocityUpdate(0, 1);
+                players.get(0).getNextImg(Sprite.bomber_down, currentAction);
+                break;
+            case "X":
+                if (players.get(0).haveBomb()) {
+                    players.get(0).placeBomb();
+                    int bomber1X = players.get(0).getXUnit();
+                    int bomber1Y = players.get(0).getYUnit();
+                    bombs.add(new Bomb(bomber1X, bomber1Y, Sprite.bomb.get(0)));
+                }
+                break;
+            case "Z":
+                if (!bombs.isEmpty()) {
+                    bombs.remove(bombs.size() - 1);
+                    players.get(0).explodeBomb();
+                }
+                break;
+            default:
+                break;
+        }
     }
 }
