@@ -30,7 +30,7 @@ public class Bomber extends GameCharacter {
         }
     }
 
-    public void explodeBomb() {
+    public void addBomb() {
         availableBomb ++;
     }
 }

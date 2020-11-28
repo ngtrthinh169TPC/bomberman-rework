@@ -56,7 +56,7 @@ public class BombermanGame extends Application {
         AnimationTimer timer = new AnimationTimer() {
             @Override
             public void handle(long l) {
-                maze.update(keyInput);
+                maze.update(keyInput, l);
                 maze.render(canvas, gc);
             }
         };

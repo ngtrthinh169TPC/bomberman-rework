@@ -15,7 +15,7 @@ public class Maze {
     public static int HEIGHT;
 
     public static final ArrayList<String> availableCommand = new ArrayList<>(
-            Arrays.asList("LEFT", "RIGHT", "UP", "DOWN", "X", "Z")
+            Arrays.asList("LEFT", "RIGHT", "UP", "DOWN", "X")
     );
 
     private final List<Bomber> players = new ArrayList<>();
@@ -75,8 +75,20 @@ public class Maze {
         }
     }
 
-    public void update(ArrayList<String> keyInput) {
-        inputProcess(keyInput);
+    public void update(ArrayList<String> keyInput, long timer) {
+        inputProcess(keyInput, timer);
+        if (!bombs.isEmpty()) {
+            for (Bomb b : bombs) {
+                if ((timer - b.getDetonationTimer()) / 1000000000 >= Bomb.DETONATE_TIME) {
+                    System.out.println("BOOM");
+                    bombs.remove(b);
+                    players.get(0).addBomb();
+                    if (bombs.isEmpty()) {
+                        break;
+                    }
+                }
+            }
+        }
 
         //enemies.forEach(GameCharacter::update);
         //blocks.forEach(Entity::update);
@@ -101,7 +113,7 @@ public class Maze {
         players.forEach(g -> g.render(gc));
     }
 
-    private void inputProcess(ArrayList<String> keyInput) {
+    private void inputProcess(ArrayList<String> keyInput, long timer) {
         keyInput.removeIf(s -> !availableCommand.contains(s));
         if (keyInput.isEmpty()) {
             players.get(0).velocityUpdate(0, 0);
@@ -132,13 +144,7 @@ public class Maze {
                     players.get(0).placeBomb();
                     int bomber1X = players.get(0).getXUnit();
                     int bomber1Y = players.get(0).getYUnit();
-                    bombs.add(new Bomb(bomber1X, bomber1Y, Sprite.bomb.get(0)));
-                }
-                break;
-            case "Z":
-                if (!bombs.isEmpty()) {
-                    bombs.remove(bombs.size() - 1);
-                    players.get(0).explodeBomb();
+                    bombs.add(new Bomb(bomber1X, bomber1Y, Sprite.bomb.get(0), timer));
                 }
                 break;
             default:
