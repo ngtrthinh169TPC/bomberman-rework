@@ -20,6 +20,6 @@ Gói tùy chọn (tối đa +2đ)
 5. Những ý tưởng khác sẽ được đánh giá và cộng điểm theo mức tương ứng
 
 **Tiến độ hiện tại**
-Đã hoàn thành đến phần 3. Di chuyển Bomber
+Đang đợi đến deadline <(")
 
-*Assigned* Ngtrthinh : 5. Xử lý va chạm
+Note : đã cập nhật lại file classic.png để tránh một vài lỗi hiển thị
