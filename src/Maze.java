@@ -5,17 +5,14 @@ import javafx.scene.canvas.GraphicsContext;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class Maze {
     public static int WIDTH;
     public static int HEIGHT;
 
     public static final ArrayList<String> availableCommand = new ArrayList<>(
-            Arrays.asList("LEFT", "RIGHT", "UP", "DOWN", "X")
+            Arrays.asList("LEFT", "RIGHT", "UP", "DOWN", "SPACE")
     );
 
     private final List<Bomber> players = new ArrayList<>();
@@ -25,8 +22,7 @@ public class Maze {
     private final List<Bomb> bombs = new ArrayList<>(); // Bombs
     private final List<Entity> entities = new ArrayList<>(); // Anything else
 
-    //private final List<Entity> stillObjects = new ArrayList<>();
-
+    /** Khởi tạo màn chơi. **/
     public Maze(int level) {
         try {
             File file = new File("res/levels/Level" + level + ".txt");
@@ -39,70 +35,59 @@ public class Maze {
             }
             HEIGHT = sc.nextInt();
             WIDTH = sc.nextInt();
-            String currentLine = sc.nextLine();
-            for (int i = 0; i < HEIGHT; ++ i) {
-                currentLine = sc.nextLine();
-                for (int j = 0; j < WIDTH; ++ j) {
-                    grasses.add(new Grass(j, i, Sprite.grass));
-                    switch (currentLine.charAt(j)) {
-                        case '#':
-                            blocks.add(new Wall(j, i, Sprite.wall));
-                            break;
-                        case '*':
-                            blocks.add(new Brick(j, i, Sprite.brick));
-                            break;
-                        case 'x':
-                            entities.add(new Portal(j, i, Sprite.portal));
-                            break;
-                        case 'p':
-                            players.add(new Bomber(j, i, Sprite.bomber_right.get(0)));
-                            break;
-                        case '1':
-                            enemies.add(new Ballom(j, i, Sprite.ballom_left.get(0)));
-                            break;
-                        case '2':
-                            enemies.add(new Oneal(j, i, Sprite.oneal_left.get(0)));
-                            break;
-                        default:
-                            break;
+            String currentLine;
+            sc.nextLine();
+            try {
+                for (int i = 0; i < HEIGHT; ++ i) {
+                    currentLine = sc.nextLine();
+                    for (int j = 0; j < WIDTH; ++ j) {
+                        grasses.add(new Grass(j, i, Sprite.grass));
+                        switch (currentLine.charAt(j)) {
+                            case '#':
+                                blocks.add(new Wall(j, i, Sprite.wall));
+                                break;
+                            case '*':
+                                blocks.add(new Brick(j, i, Sprite.brick));
+                                break;
+                            case 'x':
+                                entities.add(new Portal(j, i, Sprite.portal));
+                                break;
+                            case 'p':
+                                players.add(new Bomber(j, i, Sprite.bomber_right.get(0)));
+                                break;
+                            case '1':
+                                enemies.add(new Ballom(j, i, Sprite.ballom_left.get(0)));
+                                break;
+                            case '2':
+                                enemies.add(new Oneal(j, i, Sprite.oneal_left.get(0)));
+                                break;
+                            default:
+                                break;
+                        }
                     }
                 }
+            } catch (NoSuchElementException e) {
+                System.out.println("The file Level" + level + ".txt is not in the correct form");
+                //e.printStackTrace();
+                System.exit(0);
+            } finally {
+                sc.close();
             }
-            sc.close();
         } catch (FileNotFoundException e) {
-            System.out.println("File not found. Called from -createMap/BombermanGame.java-");
-            e.printStackTrace();
+            System.out.println("File not found: Level" + level + ".txt");
+            //e.printStackTrace();
+            System.exit(0);
         }
     }
 
+    /** Cập nhật khi chuyển frame mới **/
     public void update(ArrayList<String> keyInput, long timer) {
         inputProcess(keyInput, timer);
-        if (!bombs.isEmpty()) {
-            for (Bomb b : bombs) {
-                if ((timer - b.getDetonationTimer()) / 1000000000 >= Bomb.DETONATE_TIME) {
-                    System.out.println("BOOM");
-                    bombs.remove(b);
-                    players.get(0).addBomb();
-                    if (bombs.isEmpty()) {
-                        break;
-                    }
-                }
-            }
-        }
-
-        //enemies.forEach(GameCharacter::update);
-        //blocks.forEach(Entity::update);
-        //entities.forEach(Entity::update);
-        for (Bomber b : players) {
-            Entity collidedObject = b.collisionDetected(blocks);
-            if (collidedObject == null) {
-                b.update();
-            } else {
-                b.snapCollision(collidedObject);
-            }
-        }
+        bombProcess(timer);
+        bomberProcess();
     }
 
+    /** Render là render. **/
     public void render(Canvas canvas, GraphicsContext gc) {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         grasses.forEach(g -> g.render(gc));
@@ -113,6 +98,7 @@ public class Maze {
         players.forEach(g -> g.render(gc));
     }
 
+    /** Xử lí input từ bàn phím. **/
     private void inputProcess(ArrayList<String> keyInput, long timer) {
         keyInput.removeIf(s -> !availableCommand.contains(s));
         if (keyInput.isEmpty()) {
@@ -139,7 +125,7 @@ public class Maze {
                 players.get(0).velocityUpdate(0, 1);
                 players.get(0).getNextImg(Sprite.bomber_down, currentAction);
                 break;
-            case "X":
+            case "SPACE":
                 if (players.get(0).haveBomb()) {
                     players.get(0).placeBomb();
                     int bomber1X = players.get(0).getXUnit();
@@ -149,6 +135,34 @@ public class Maze {
                 break;
             default:
                 break;
+        }
+    }
+
+    /** Xử lí bom. **/
+    public void bombProcess(long timer) {
+        if (!bombs.isEmpty()) {
+            for (Bomb b : bombs) {
+                if ((timer - b.getDetonationTimer()) / 1000000000 >= Bomb.DETONATE_TIME) {
+                    System.out.println("BOOM");
+                    bombs.remove(b);
+                    players.get(0).addBomb();
+                    if (bombs.isEmpty()) {
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    /** Xử lí khi di chuyển Bomber. **/
+    private void bomberProcess() {
+        for (Bomber b : players) {
+            Entity collidedObject = b.collisionDetected(blocks);
+            if (collidedObject == null) {
+                b.update();
+            } else {
+                b.snapCollision(collidedObject);
+            }
         }
     }
 }
