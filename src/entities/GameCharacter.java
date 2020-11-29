@@ -54,12 +54,12 @@ public abstract class GameCharacter extends Entity {
 
     public abstract void actionUpdate(ArrayList<String> input);
 
-    public void velocityUpdate(double rv, double dv) {
+    public void velocityUpdate(double rv, double dv) {  //cập nhật vận tốc
         this.rightVelocity = rv;
         this.downVelocity = dv;
     }
 
-    private boolean collideWith(Entity entity) {
+    private boolean collideWith(Entity entity) {    //kiểm tra va chạm
         nextLeft = this.xLeft + this.rightVelocity * this.moveSpeed;
         nextRight = nextLeft + this.realWidth;
         nextTop = this.yTop + this.downVelocity * this.moveSpeed;
@@ -70,7 +70,7 @@ public abstract class GameCharacter extends Entity {
                 || (nextTop >= entity.yTop + entity.realHeight));
     }
 
-    public void snapCollision(Entity entity) {
+    public void snapCollision(Entity entity) {  //xử lý va chạm đột ngột
 
         if (this.nextRight > entity.xLeft
                 && this.nextLeft < entity.xLeft

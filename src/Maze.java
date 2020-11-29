@@ -20,14 +20,14 @@ public class Maze {
 
     private final List<Bomber> players = new ArrayList<>();
     private final List<GameCharacter> enemies = new ArrayList<>();
-    private final List<Entity> grasses = new ArrayList<>();
+    private final List<Grass> grasses = new ArrayList<>();
     private final List<Entity> blocks = new ArrayList<>(); // Bricks and Walls
     private final List<Bomb> bombs = new ArrayList<>(); // Bombs
     private final List<Entity> entities = new ArrayList<>(); // Anything else
 
     //private final List<Entity> stillObjects = new ArrayList<>();
 
-    public Maze(int level) {
+    public Maze(int level) {    //hiển thị lên màn hình các entity của trò chơi
         try {
             File file = new File("res/levels/Level" + level + ".txt");
             Scanner sc = new Scanner(file);
@@ -101,7 +101,7 @@ public class Maze {
         players.forEach(g -> g.render(gc));
     }
 
-    private void inputProcess(ArrayList<String> keyInput) {
+    private void inputProcess(ArrayList<String> keyInput) { /*hàm xử lý input nhập vào từ bàn phím*/
         keyInput.removeIf(s -> !availableCommand.contains(s));
         if (keyInput.isEmpty()) {
             players.get(0).velocityUpdate(0, 0);
