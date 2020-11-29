@@ -33,6 +33,14 @@ public abstract class Entity {
         return (int)(yTop + Sprite.DEFAULT_SIZE) / Sprite.SCALED_SIZE;
     }
 
+    public double getxLeft () {
+        return xLeft;
+    }
+
+    public double getyTop () {
+        return yTop;
+    }
+
     public void render(GraphicsContext gc) {
         gc.drawImage(img, xLeft, yTop);
     }

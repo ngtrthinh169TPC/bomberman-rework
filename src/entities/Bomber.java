@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public class Bomber extends GameCharacter {
 
-    public static final double BOMBER_SPEED = 1.2;
+    public static final double BOMBER_SPEED = 0.8;
     public static final int BOMB_AMOUNT = 1;
     private int availableBomb = BOMB_AMOUNT;
 
@@ -30,7 +30,7 @@ public class Bomber extends GameCharacter {
         }
     }
 
-    public void explodeBomb() {
+    public void addBomb() {
         availableBomb ++;
     }
 }
