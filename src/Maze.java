@@ -5,17 +5,14 @@ import javafx.scene.canvas.GraphicsContext;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class Maze {
     public static int WIDTH;
     public static int HEIGHT;
 
     public static final ArrayList<String> availableCommand = new ArrayList<>(
-            Arrays.asList("LEFT", "RIGHT", "UP", "DOWN", "X")
+            Arrays.asList("LEFT", "RIGHT", "UP", "DOWN", "SPACE")
     );
 
     private final List<Bomber> players = new ArrayList<>();
@@ -113,9 +110,6 @@ public class Maze {
             }
         }
 
-        //enemies.forEach(GameCharacter::update);
-        //blocks.forEach(Entity::update);
-        //entities.forEach(Entity::update);
         for (Bomber b : players) {
             Entity collidedObject = b.collisionDetected(bricks);
             if (collidedObject == null) {
@@ -231,7 +225,7 @@ public class Maze {
                 players.get(0).velocityUpdate(0, 1);
                 players.get(0).getNextImg(Sprite.bomber_down, currentAction);
                 break;
-            case "X":
+            case "SPACE":
                 if (players.get(0).haveBomb()) {
                     players.get(0).placeBomb();
                     int bomber1X = players.get(0).getXUnit();
