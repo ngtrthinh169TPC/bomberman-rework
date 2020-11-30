@@ -26,11 +26,19 @@ public abstract class Entity {
     }
 
     public int getXUnit() {
-        return (int)(xLeft + Sprite.SCALED_SIZE / 2) / Sprite.SCALED_SIZE;
+        return (int)(xLeft + Sprite.DEFAULT_SIZE) / Sprite.SCALED_SIZE;
     }
 
     public int getYUnit() {
-        return (int)(yTop + Sprite.SCALED_SIZE / 2) / Sprite.SCALED_SIZE;
+        return (int)(yTop + Sprite.DEFAULT_SIZE) / Sprite.SCALED_SIZE;
+    }
+
+    public double getxLeft () {
+        return xLeft;
+    }
+
+    public double getyTop () {
+        return yTop;
     }
 
     public void render(GraphicsContext gc) {

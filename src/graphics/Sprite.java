@@ -263,41 +263,79 @@ public class Sprite {
     |--------------------------------------------------------------------------
     | FlameSegment Sprites
     |--------------------------------------------------------------------------
-    public static Sprite bomb_exploded = new Sprite(DEFAULT_SIZE, 0, 4, SpriteSheet.tiles, 16, 16);
-    public static Sprite bomb_exploded1 = new Sprite(DEFAULT_SIZE, 0, 5, SpriteSheet.tiles, 16, 16);
-    public static Sprite bomb_exploded2 = new Sprite(DEFAULT_SIZE, 0, 6, SpriteSheet.tiles, 16, 16);
+    */
 
-    public static Sprite explosion_vertical = new Sprite(DEFAULT_SIZE, 1, 5, SpriteSheet.tiles, 16, 16);
-    public static Sprite explosion_vertical1 = new Sprite(DEFAULT_SIZE, 2, 5, SpriteSheet.tiles, 16, 16);
-    public static Sprite explosion_vertical2 = new Sprite(DEFAULT_SIZE, 3, 5, SpriteSheet.tiles, 16, 16);
+    public static ArrayList<Sprite> bomb_exploded = new ArrayList<>(
+            Arrays.asList(
+                    new Sprite(DEFAULT_SIZE, 0, 4, SpriteSheet.tiles, 16, 16),
+                    new Sprite(DEFAULT_SIZE, 0, 5, SpriteSheet.tiles, 16, 16),
+                    new Sprite(DEFAULT_SIZE, 0, 6, SpriteSheet.tiles, 16, 16)
+            )
+    );
 
-    public static Sprite explosion_horizontal = new Sprite(DEFAULT_SIZE, 1, 7, SpriteSheet.tiles, 16, 16);
-    public static Sprite explosion_horizontal1 = new Sprite(DEFAULT_SIZE, 1, 8, SpriteSheet.tiles, 16, 16);
-    public static Sprite explosion_horizontal2 = new Sprite(DEFAULT_SIZE, 1, 9, SpriteSheet.tiles, 16, 16);
+    public static ArrayList<Sprite> explosion_vertical = new ArrayList<>(
+            Arrays.asList(
+                    new Sprite(DEFAULT_SIZE, 1, 5, SpriteSheet.tiles, 16, 16),
+                    new Sprite(DEFAULT_SIZE, 2, 5, SpriteSheet.tiles, 16, 16),
+                    new Sprite(DEFAULT_SIZE, 3, 5, SpriteSheet.tiles, 16, 16)
+            )
+    );
 
-    public static Sprite explosion_horizontal_left_last = new Sprite(DEFAULT_SIZE, 0, 7, SpriteSheet.tiles, 16, 16);
-    public static Sprite explosion_horizontal_left_last1 = new Sprite(DEFAULT_SIZE, 0, 8, SpriteSheet.tiles, 16, 16);
-    public static Sprite explosion_horizontal_left_last2 = new Sprite(DEFAULT_SIZE, 0, 9, SpriteSheet.tiles, 16, 16);
+    public static ArrayList<Sprite> explosion_horizontal = new ArrayList<>(
+            Arrays.asList(
+                    new Sprite(DEFAULT_SIZE, 1, 7, SpriteSheet.tiles, 16, 16),
+                    new Sprite(DEFAULT_SIZE, 1, 8, SpriteSheet.tiles, 16, 16),
+                    new Sprite(DEFAULT_SIZE, 1, 9, SpriteSheet.tiles, 16, 16)
+            )
+    );
 
-    public static Sprite explosion_horizontal_right_last = new Sprite(DEFAULT_SIZE, 2, 7, SpriteSheet.tiles, 16, 16);
-    public static Sprite explosion_horizontal_right_last1 = new Sprite(DEFAULT_SIZE, 2, 8, SpriteSheet.tiles, 16, 16);
-    public static Sprite explosion_horizontal_right_last2 = new Sprite(DEFAULT_SIZE, 2, 9, SpriteSheet.tiles, 16, 16);
+    public static ArrayList<Sprite> explosion_horizontal_left_last = new ArrayList<>(
+            Arrays.asList(
+                    new Sprite(DEFAULT_SIZE, 0, 7, SpriteSheet.tiles, 16, 16),
+                    new Sprite(DEFAULT_SIZE, 0, 8, SpriteSheet.tiles, 16, 16),
+                    new Sprite(DEFAULT_SIZE, 0, 9, SpriteSheet.tiles, 16, 16)
+            )
+    );
 
-    public static Sprite explosion_vertical_top_last = new Sprite(DEFAULT_SIZE, 1, 4, SpriteSheet.tiles, 16, 16);
-    public static Sprite explosion_vertical_top_last1 = new Sprite(DEFAULT_SIZE, 2, 4, SpriteSheet.tiles, 16, 16);
-    public static Sprite explosion_vertical_top_last2 = new Sprite(DEFAULT_SIZE, 3, 4, SpriteSheet.tiles, 16, 16);
+    public static ArrayList<Sprite> explosion_horizontal_right_last = new ArrayList<>(
+            Arrays.asList(
+                    new Sprite(DEFAULT_SIZE, 2, 7, SpriteSheet.tiles, 16, 16),
+                    new Sprite(DEFAULT_SIZE, 2, 8, SpriteSheet.tiles, 16, 16),
+                    new Sprite(DEFAULT_SIZE, 2, 9, SpriteSheet.tiles, 16, 16)
+            )
+    );
 
-    public static Sprite explosion_vertical_down_last = new Sprite(DEFAULT_SIZE, 1, 6, SpriteSheet.tiles, 16, 16);
-    public static Sprite explosion_vertical_down_last1 = new Sprite(DEFAULT_SIZE, 2, 6, SpriteSheet.tiles, 16, 16);
-    public static Sprite explosion_vertical_down_last2 = new Sprite(DEFAULT_SIZE, 3, 6, SpriteSheet.tiles, 16, 16);
+    public static ArrayList<Sprite> explosion_vertical_top_last = new ArrayList<>(
+            Arrays.asList(
+                    new Sprite(DEFAULT_SIZE, 1, 4, SpriteSheet.tiles, 16, 16),
+                    new Sprite(DEFAULT_SIZE, 2, 4, SpriteSheet.tiles, 16, 16),
+                    new Sprite(DEFAULT_SIZE, 3, 4, SpriteSheet.tiles, 16, 16)
+            )
+    );
 
+    public static ArrayList<Sprite> explosion_vertical_down_last = new ArrayList<>(
+            Arrays.asList(
+                    new Sprite(DEFAULT_SIZE, 1, 6, SpriteSheet.tiles, 16, 16),
+                    new Sprite(DEFAULT_SIZE, 2, 6, SpriteSheet.tiles, 16, 16),
+                    new Sprite(DEFAULT_SIZE, 3, 6, SpriteSheet.tiles, 16, 16)
+            )
+    );
+
+    /*
     |--------------------------------------------------------------------------
     | Brick FlameSegment
     |--------------------------------------------------------------------------
-    public static Sprite brick_exploded = new Sprite(DEFAULT_SIZE, 7, 1, SpriteSheet.tiles, 16, 16);
-    public static Sprite brick_exploded1 = new Sprite(DEFAULT_SIZE, 7, 2, SpriteSheet.tiles, 16, 16);
-    public static Sprite brick_exploded2 = new Sprite(DEFAULT_SIZE, 7, 3, SpriteSheet.tiles, 16, 16);
+    */
 
+    public static ArrayList<Sprite> brick_exploded = new ArrayList<>(
+            Arrays.asList(
+                    new Sprite(DEFAULT_SIZE, 7, 1, SpriteSheet.tiles, 16, 16),
+                    new Sprite(DEFAULT_SIZE, 7, 2, SpriteSheet.tiles, 16, 16),
+                    new Sprite(DEFAULT_SIZE, 7, 3, SpriteSheet.tiles, 16, 16)
+            )
+    );
+
+    /*
     |--------------------------------------------------------------------------
     | Powerup
     |--------------------------------------------------------------------------
