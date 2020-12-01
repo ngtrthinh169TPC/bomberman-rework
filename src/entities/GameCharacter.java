@@ -20,6 +20,8 @@ public abstract class GameCharacter extends Entity {
         super(x, y, sprite);
         this.rightVelocity = 0;
         this.downVelocity = 0;
+        this.collidable = true;
+        this.destructible = true;
     }
 
     public void getNextImg(ArrayList<Sprite> sprites, String direction) {
@@ -52,8 +54,10 @@ public abstract class GameCharacter extends Entity {
     /** Phát hiện va chạm **/
     public Entity collisionDetected(List<Entity> entities) {
         for (Entity e : entities) {
-            if (this.collideWith(e)) {
-                return e;
+            if (e.isCollidable()) {
+                if (this.collideWith(e)) {
+                    return e;
+                }
             }
         }
         return null;

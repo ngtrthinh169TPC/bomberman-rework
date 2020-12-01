@@ -6,7 +6,6 @@ import javafx.scene.canvas.GraphicsContext;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
-import java.util.stream.Stream;
 
 public class Maze {
     public static int WIDTH;
@@ -18,9 +17,10 @@ public class Maze {
 
     private final List<Bomber> players = new ArrayList<>();
     private final List<GameCharacter> enemies = new ArrayList<>();
-    private final List<Grass> grasses = new ArrayList<>();
-    private final List<Entity> bricks = new ArrayList<>();
-    private final List<Entity> walls = new ArrayList<>();
+    //private final List<Grass> grasses = new ArrayList<>();
+    //private final List<Entity> bricks = new ArrayList<>();
+    //private final List<Entity> walls = new ArrayList<>();
+    private final List<Entity> environment = new ArrayList<>();
     private final List<Bomb> bombs = new ArrayList<>();
     private final List<Entity> entities = new ArrayList<>(); // Anything else
     private final List<Bomb> bomb_explosive = new ArrayList<>();
@@ -44,13 +44,13 @@ public class Maze {
                 for (int i = 0; i < HEIGHT; ++ i) {
                     currentLine = sc.nextLine();
                     for (int j = 0; j < WIDTH; ++ j) {
-                        grasses.add(new Grass(j, i, Sprite.grass));
+                        environment.add(new Grass(j, i, Sprite.grass));
                         switch (currentLine.charAt(j)) {
                             case '#':
-                                walls.add(new Wall(j, i, Sprite.wall));
+                                environment.add(new Wall(j, i, Sprite.wall));
                                 break;
                             case '*':
-                                bricks.add(new Brick(j, i, Sprite.brick));
+                                environment.add(new Brick(j, i, Sprite.brick));
                                 break;
                             case 'x':
                                 entities.add(new Portal(j, i, Sprite.portal));
@@ -85,46 +85,20 @@ public class Maze {
 
     /** Cập nhật trạng thái màn chơi. **/
     public void update(ArrayList<String> keyInput, long timer) {
+
         inputProcess(keyInput, timer);
-        if (!bombs.isEmpty()) {
-            for (Bomb b : bombs) {
-                if ((timer - b.getDetonationTimer()) / 1000000000 >= Bomb.DETONATE_TIME) {
-                    int x = b.getXUnit();
-                    int y = b.getYUnit();
-                    bombs.remove(b);
-                    bomb_explosive.add(new Bomb(x, y, Sprite.bomb_exploded.get(0), timer));
-                    explosive(x, y, timer);
-                    players.get(0).addBomb();
-                    if (bombs.isEmpty()) {
-                        break;
-                    }
-                }
-            }
-        }
-
-        if (!bomb_explosive.isEmpty()) {
-            Bomb p = bomb_explosive.get(0);
-            if ((timer - p.getDetonationTimer()) / 1000000000 >= Bomb.DETONATE_TIME) {
-                bomb_explosive.removeAll(bomb_explosive);
-                System.out.println("Explosive");
-            }
-        }
-
-        for (Bomber b : players) {
-            List<Entity> blocks = new ArrayList<>();
-            Stream.of(bricks, walls).forEach(blocks::addAll);
-            Entity collidedBrick = b.collisionDetected(blocks);
-            if (collidedBrick == null) {
-                b.update();
-            } else {
-                b.snapCollision(collidedBrick);
-            }
-        }
+        bombProcess(timer);
+        bomberUpdate();
     }
 
+    /** Xử lí bom nổ **/
     public void explosive(int xUnit, int yUnit, long timer) {
 
-        for (Grass e : grasses) {
+        /* Thêm flame vào những ô bị bom nổ. */
+        for (Entity e : environment) {
+            if (e.isCollidable()) {
+                continue;
+            }
             if (e.getXUnit() == xUnit && e.getYUnit() == yUnit - 1) {
                 bomb_explosive.add(new Bomb(e.getXUnit(), e.getYUnit(), Sprite.explosion_vertical_top_last.get(0), timer));
             }
@@ -139,19 +113,23 @@ public class Maze {
             }
         }
 
-        for (Entity w : walls) {
-            if ((w.getXUnit() == xUnit && w.getYUnit() == yUnit - 1)
-                    || (w.getXUnit() == xUnit && w.getYUnit() == yUnit + 1)
-                    || (w.getXUnit() == xUnit - 1 && w.getYUnit() == yUnit)
-                    || (w.getXUnit() == xUnit + 1 && w.getYUnit() == yUnit)) {
-                bomb_explosive.removeIf(b -> b.getXUnit() == w.getXUnit() && b.getYUnit() == w.getYUnit());
+        for (Entity e : environment) {
+            if (e.isCollidable()) {
+                if ((e.getXUnit() == xUnit && e.getYUnit() == yUnit - 1)
+                        || (e.getXUnit() == xUnit && e.getYUnit() == yUnit + 1)
+                        || (e.getXUnit() == xUnit - 1 && e.getYUnit() == yUnit)
+                        || (e.getXUnit() == xUnit + 1 && e.getYUnit() == yUnit)) {
+                    bomb_explosive.removeIf(b -> b.getXUnit() == e.getXUnit()
+                            && b.getYUnit() == e.getYUnit());
+                }
             }
         }
 
-        bricks.removeIf(e -> (e.getXUnit() == xUnit && e.getYUnit() == yUnit - 1)
+        environment.removeIf(e -> ((e.isDestructible())
+                && ((e.getXUnit() == xUnit && e.getYUnit() == yUnit - 1)
                 || (e.getXUnit() == xUnit && e.getYUnit() == yUnit + 1)
                 || (e.getXUnit() == xUnit - 1 && e.getYUnit() == yUnit)
-                || (e.getXUnit() == xUnit + 1 && e.getYUnit() == yUnit));
+                || (e.getXUnit() == xUnit + 1 && e.getYUnit() == yUnit))));
 
         enemies.removeIf(e -> (e.getXUnit() == xUnit && e.getYUnit() == yUnit - 1)
                 || (e.getXUnit() == xUnit && e.getYUnit() == yUnit + 1)
@@ -175,11 +153,9 @@ public class Maze {
     /** Render là render. **/
     public void render(Canvas canvas, GraphicsContext gc) { //render mọi thứ lên màn hình
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        grasses.forEach(g -> g.render(gc));
+        environment.forEach(g -> g.render(gc));
         entities.forEach(g -> g.render(gc));
         bombs.forEach(g -> g.render(gc));
-        bricks.forEach(g -> g.render(gc));
-        walls.forEach(g -> g.render(gc));
         bomb_explosive.forEach(g -> g.render(gc));
         enemies.forEach(g -> g.render(gc));
         players.forEach(g -> g.render(gc));
@@ -222,6 +198,44 @@ public class Maze {
                 break;
             default:
                 break;
+        }
+    }
+
+    /** Xử lí trạng thái bom. **/
+    private void bombProcess(long timer) {
+        if (!bombs.isEmpty()) {
+            for (Bomb b : bombs) {
+                if ((timer - b.getDetonationTimer()) / 1000000000 >= Bomb.DETONATE_TIME) {
+                    int x = b.getXUnit();
+                    int y = b.getYUnit();
+                    bombs.remove(b);
+                    bomb_explosive.add(new Bomb(x, y, Sprite.bomb_exploded.get(0), timer));
+                    explosive(x, y, timer);
+                    players.get(0).addBomb();
+                    if (bombs.isEmpty()) {
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (!bomb_explosive.isEmpty()) {
+            Bomb p = bomb_explosive.get(0);
+            if ((timer - p.getDetonationTimer()) / 1000000000 >= Bomb.DETONATE_TIME) {
+                bomb_explosive.clear();
+            }
+        }
+    }
+
+    /** Update Bomber status **/
+    private void bomberUpdate() {
+        for (Bomber b : players) {
+            Entity collidedBrick = b.collisionDetected(environment);
+            if (collidedBrick == null) {
+                b.update();
+            } else {
+                b.snapCollision(collidedBrick);
+            }
         }
     }
 }

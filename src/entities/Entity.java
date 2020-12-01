@@ -7,9 +7,11 @@ import javafx.scene.image.Image;
 public abstract class Entity {
     protected double xLeft; /* Coordinate counted from TOP_LEFT corner **/
     protected double yTop;
-    protected Image img;
-    protected double realWidth;
+    protected Image img; /* Current sprite's image **/
+    protected double realWidth; /* Size in canvas **/
     protected double realHeight;
+    protected boolean collidable;
+    protected boolean destructible;
 
     protected double nextLeft;
     protected double nextTop;
@@ -23,6 +25,8 @@ public abstract class Entity {
         this.img = sprite.getFxImage();
         this.realWidth = sprite.getRealWidth() * Sprite.SCALE_RATIO;
         this.realHeight = sprite.getRealHeight() * Sprite.SCALE_RATIO;
+        this.collidable = false;
+        this.destructible = false;
     }
 
     public int getXUnit() {
@@ -33,12 +37,12 @@ public abstract class Entity {
         return (int)(yTop + Sprite.DEFAULT_SIZE) / Sprite.SCALED_SIZE;
     }
 
-    public double getxLeft () {
-        return xLeft;
+    public boolean isCollidable() {
+        return collidable;
     }
 
-    public double getyTop () {
-        return yTop;
+    public boolean isDestructible() {
+        return destructible;
     }
 
     public void render(GraphicsContext gc) {

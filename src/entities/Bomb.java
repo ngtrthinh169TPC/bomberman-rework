@@ -14,6 +14,10 @@ public class Bomb extends Entity {
         return detonationTimer;
     }
 
+    public void setCollidable(boolean collidable) {
+        this.collidable = collidable;
+    }
+
     @Override
     public void update() {
 
