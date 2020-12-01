@@ -6,6 +6,7 @@ import javafx.scene.canvas.GraphicsContext;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
+import java.util.stream.Stream;
 
 public class Maze {
     public static int WIDTH;
@@ -16,12 +17,11 @@ public class Maze {
     );
 
     private final List<Bomber> players = new ArrayList<>();
-    private final List<GameCharacter> ballom = new ArrayList<>();
-    private final List<GameCharacter> oneal = new ArrayList<>();
+    private final List<GameCharacter> enemies = new ArrayList<>();
     private final List<Grass> grasses = new ArrayList<>();
-    private final List<Entity> bricks = new ArrayList<>(); // Bricks and Walls
+    private final List<Entity> bricks = new ArrayList<>();
     private final List<Entity> walls = new ArrayList<>();
-    private final List<Bomb> bombs = new ArrayList<>(); // Bombs
+    private final List<Bomb> bombs = new ArrayList<>();
     private final List<Entity> entities = new ArrayList<>(); // Anything else
     private final List<Bomb> bomb_explosive = new ArrayList<>();
 
@@ -59,10 +59,10 @@ public class Maze {
                                 players.add(new Bomber(j, i, Sprite.bomber_right.get(0)));
                                 break;
                             case '1':
-                                ballom.add(new Ballom(j, i, Sprite.ballom_left.get(0)));
+                                enemies.add(new Ballom(j, i, Sprite.ballom_left.get(0)));
                                 break;
                             case '2':
-                                oneal.add(new Oneal(j, i, Sprite.oneal_left.get(0)));
+                                enemies.add(new Oneal(j, i, Sprite.oneal_left.get(0)));
                                 break;
                             default:
                                 break;
@@ -83,12 +83,12 @@ public class Maze {
         }
     }
 
-    public void update(ArrayList<String> keyInput, long timer) {    //xử lý bomb
+    /** Cập nhật trạng thái màn chơi. **/
+    public void update(ArrayList<String> keyInput, long timer) {
         inputProcess(keyInput, timer);
         if (!bombs.isEmpty()) {
             for (Bomb b : bombs) {
                 if ((timer - b.getDetonationTimer()) / 1000000000 >= Bomb.DETONATE_TIME) {
-                    System.out.println("BOOM");
                     int x = b.getXUnit();
                     int y = b.getYUnit();
                     bombs.remove(b);
@@ -111,20 +111,13 @@ public class Maze {
         }
 
         for (Bomber b : players) {
-            Entity collidedObject = b.collisionDetected(bricks);
-            if (collidedObject == null) {
+            List<Entity> blocks = new ArrayList<>();
+            Stream.of(bricks, walls).forEach(blocks::addAll);
+            Entity collidedBrick = b.collisionDetected(blocks);
+            if (collidedBrick == null) {
                 b.update();
             } else {
-                b.snapCollision(collidedObject);
-            }
-        }
-
-        for (Bomber b : players) {
-            Entity collidedObject = b.collisionDetected(walls);
-            if (collidedObject == null) {
-                b.update();
-            } else {
-                b.snapCollision(collidedObject);
+                b.snapCollision(collidedBrick);
             }
         }
     }
@@ -160,12 +153,7 @@ public class Maze {
                 || (e.getXUnit() == xUnit - 1 && e.getYUnit() == yUnit)
                 || (e.getXUnit() == xUnit + 1 && e.getYUnit() == yUnit));
 
-        ballom.removeIf(e -> (e.getXUnit() == xUnit && e.getYUnit() == yUnit - 1)
-                || (e.getXUnit() == xUnit && e.getYUnit() == yUnit + 1)
-                || (e.getXUnit() == xUnit - 1 && e.getYUnit() == yUnit)
-                || (e.getXUnit() == xUnit + 1 && e.getYUnit() == yUnit));
-
-        oneal.removeIf(e -> (e.getXUnit() == xUnit && e.getYUnit() == yUnit - 1)
+        enemies.removeIf(e -> (e.getXUnit() == xUnit && e.getYUnit() == yUnit - 1)
                 || (e.getXUnit() == xUnit && e.getYUnit() == yUnit + 1)
                 || (e.getXUnit() == xUnit - 1 && e.getYUnit() == yUnit)
                 || (e.getXUnit() == xUnit + 1 && e.getYUnit() == yUnit));
@@ -193,8 +181,7 @@ public class Maze {
         bricks.forEach(g -> g.render(gc));
         walls.forEach(g -> g.render(gc));
         bomb_explosive.forEach(g -> g.render(gc));
-        ballom.forEach(g -> g.render(gc));
-        oneal.forEach(g -> g.render(gc));
+        enemies.forEach(g -> g.render(gc));
         players.forEach(g -> g.render(gc));
     }
 

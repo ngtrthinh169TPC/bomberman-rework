@@ -14,6 +14,7 @@ public class Sprite {
     private static final double CORNER_RATIO = 0.4;
     public static final double CORNER_SNAP = (double)SCALED_SIZE * CORNER_RATIO;
     private static final int TRANSPARENT_COLOR = 0xffff00ff;
+
     public final int SIZE;
     private final int xAxis;
     private final int yAxis;

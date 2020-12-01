@@ -28,6 +28,7 @@ public abstract class GameCharacter extends Entity {
             if (this.frameTimer >= WALK_TIME) {
                 this.frameTimer %= WALK_TIME;
                 this.frameNumber = (this.frameNumber + 1) % 3;
+                // 3 is the number of sprites for an entity
             }
         } else {
             this.frameTimer = 0;

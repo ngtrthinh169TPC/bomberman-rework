@@ -4,7 +4,7 @@ import graphics.Sprite;
 
 public class Bomber extends GameCharacter {
 
-    public static final double BOMBER_SPEED = 0.8;
+    public static final double BOMBER_SPEED = 1.7;
     public static final int BOMB_AMOUNT = 1;
     private int availableBomb = BOMB_AMOUNT;
 
