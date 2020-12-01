@@ -2,6 +2,8 @@ import entities.*;
 import graphics.Sprite;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -17,16 +19,15 @@ public class Maze {
 
     private final List<Bomber> players = new ArrayList<>();
     private final List<GameCharacter> enemies = new ArrayList<>();
-    //private final List<Grass> grasses = new ArrayList<>();
-    //private final List<Entity> bricks = new ArrayList<>();
-    //private final List<Entity> walls = new ArrayList<>();
     private final List<Entity> environment = new ArrayList<>();
     private final List<Bomb> bombs = new ArrayList<>();
     private final List<Entity> entities = new ArrayList<>(); // Anything else
     private final List<Bomb> bomb_explosive = new ArrayList<>();
 
+    private MediaPlayer mediaPlayer;
+
     /** Khởi tạo màn chơi. **/
-    public Maze(int level) {
+    public Maze(int level, String audioFile) {
         try {
             File file = new File("res/levels/Level" + level + ".txt");
             Scanner sc = new Scanner(file);
@@ -40,44 +41,46 @@ public class Maze {
             WIDTH = sc.nextInt();
             String currentLine;
             sc.nextLine();
-            try {
-                for (int i = 0; i < HEIGHT; ++ i) {
-                    currentLine = sc.nextLine();
-                    for (int j = 0; j < WIDTH; ++ j) {
-                        environment.add(new Grass(j, i, Sprite.grass));
-                        switch (currentLine.charAt(j)) {
-                            case '#':
-                                environment.add(new Wall(j, i, Sprite.wall));
-                                break;
-                            case '*':
-                                environment.add(new Brick(j, i, Sprite.brick));
-                                break;
-                            case 'x':
-                                entities.add(new Portal(j, i, Sprite.portal));
-                                break;
-                            case 'p':
-                                players.add(new Bomber(j, i, Sprite.bomber_right.get(0)));
-                                break;
-                            case '1':
-                                enemies.add(new Ballom(j, i, Sprite.ballom_left.get(0)));
-                                break;
-                            case '2':
-                                enemies.add(new Oneal(j, i, Sprite.oneal_left.get(0)));
-                                break;
-                            default:
-                                break;
-                        }
+            for (int i = 0; i < HEIGHT; ++i) {
+                currentLine = sc.nextLine();
+                for (int j = 0; j < WIDTH; ++j) {
+                    environment.add(new Grass(j, i, Sprite.grass));
+                    switch (currentLine.charAt(j)) {
+                        case '#':
+                            environment.add(new Wall(j, i, Sprite.wall));
+                            break;
+                        case '*':
+                            environment.add(new Brick(j, i, Sprite.brick));
+                            break;
+                        case 'x':
+                            entities.add(new Portal(j, i, Sprite.portal));
+                            break;
+                        case 'p':
+                            players.add(new Bomber(j, i, Sprite.bomber_right.get(0)));
+                            break;
+                        case '1':
+                            enemies.add(new Ballom(j, i, Sprite.ballom_left.get(0)));
+                            break;
+                        case '2':
+                            enemies.add(new Oneal(j, i, Sprite.oneal_left.get(0)));
+                            break;
+                        default:
+                            break;
                     }
                 }
-            } catch (NoSuchElementException e) {
-                System.out.println("The file Level" + level + ".txt is not in the correct form");
-                //e.printStackTrace();
-                System.exit(0);
-            } finally {
-                sc.close();
             }
+            sc.close();
+
+            String bgAudioPath = "res/audio/" + audioFile + ".mp3";
+            Media backgroundAudio = new Media(new File(bgAudioPath).toURI().toString());
+            mediaPlayer = new MediaPlayer(backgroundAudio);
+            mediaPlayer.setAutoPlay(true);
         } catch (FileNotFoundException e) {
             System.out.println("File not found: Level" + level + ".txt");
+            //e.printStackTrace();
+            System.exit(0);
+        } catch (NoSuchElementException e) {
+            System.out.println("The file Level" + level + ".txt is not in the correct form");
             //e.printStackTrace();
             System.exit(0);
         }
@@ -91,8 +94,28 @@ public class Maze {
         bomberUpdate();
     }
 
+    /** Render là render. **/
+    public void render(Canvas canvas, GraphicsContext gc) { //render mọi thứ lên màn hình
+        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        environment.forEach(g -> g.render(gc));
+        entities.forEach(g -> g.render(gc));
+        bombs.forEach(g -> g.render(gc));
+        bomb_explosive.forEach(g -> g.render(gc));
+        enemies.forEach(g -> g.render(gc));
+        players.forEach(g -> g.render(gc));
+    }
+
+    /** Return 0 nếu game đang chạy, return 1 nếu qua màn, return 2 nếu bomber thua. **/
+    public int levelStatus() {
+        if (enemies.isEmpty()) {
+            closeLevel();
+            return 1;
+        }
+        return 0;
+    }
+
     /** Xử lí bom nổ **/
-    public void explosive(int xUnit, int yUnit, long timer) {
+    private void explosive(int xUnit, int yUnit, long timer) {
 
         /* Thêm flame vào những ô bị bom nổ. */
         for (Entity e : environment) {
@@ -148,17 +171,6 @@ public class Maze {
                 players.add(new Bomber(x, y, Sprite.bomber_dead.get(0)));
             }
         }
-    }
-
-    /** Render là render. **/
-    public void render(Canvas canvas, GraphicsContext gc) { //render mọi thứ lên màn hình
-        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        environment.forEach(g -> g.render(gc));
-        entities.forEach(g -> g.render(gc));
-        bombs.forEach(g -> g.render(gc));
-        bomb_explosive.forEach(g -> g.render(gc));
-        enemies.forEach(g -> g.render(gc));
-        players.forEach(g -> g.render(gc));
     }
 
     /** Xử lí input từ bàn phím. **/
@@ -237,5 +249,9 @@ public class Maze {
                 b.snapCollision(collidedBrick);
             }
         }
+    }
+
+    private void closeLevel() {
+        mediaPlayer.stop();
     }
 }

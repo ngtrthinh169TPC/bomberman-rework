@@ -5,18 +5,15 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaException;
-import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 
-import java.io.File;
 import java.util.ArrayList;
 
 public class BombermanGame extends Application {
     private GraphicsContext gc;
     private Canvas canvas;
     private Maze maze;
+    private Stage stage;
 
     private final ArrayList<String> keyInput = new ArrayList<>();
 
@@ -25,37 +22,36 @@ public class BombermanGame extends Application {
     }
 
     @Override
-    public void start(Stage stage) {
-        maze = new Maze(1);
+    public void start(Stage primaryStage) {
+        stage = primaryStage;
 
+        switchLevel(1);
+
+        stage.show();
+
+        AnimationTimer timer = new AnimationTimer() {
+            @Override
+            public void handle(long l) {
+                maze.update(keyInput, l);
+                maze.render(canvas, gc);
+                if (maze.levelStatus() == 1) {
+                    switchLevel(2);
+                }
+            }
+        };
+        timer.start();
+    }
+
+    private void switchLevel(int level) {
+        maze = new Maze(level, "03_StageTheme");
         canvas = new Canvas(Sprite.SCALED_SIZE * Maze.WIDTH,
                 Sprite.SCALED_SIZE * Maze.HEIGHT);
         gc = canvas.getGraphicsContext2D();
-
         Group root = new Group();
         root.getChildren().add(canvas);
-
         Scene scene = new Scene(root);
-
+        maze.render(canvas, gc);
         stage.setScene(scene);
-        stage.show();
-
-        String bgAudioPath = "res/audio/03_StageTheme.mp3";
-        Media backgroundAudio;
-        MediaPlayer mediaPlayer = null;
-
-        try {
-            backgroundAudio = new Media(new File(bgAudioPath).toURI().toString());
-            mediaPlayer = new MediaPlayer(backgroundAudio);
-            mediaPlayer.setAutoPlay(true);
-
-        } catch (MediaException e) {
-            System.out.println("Audio file: " + bgAudioPath + " is not found");
-        }
-        if (mediaPlayer != null) {
-            mediaPlayer.play();
-        }
-
         scene.setOnKeyPressed(
                 event -> {
                     String code = event.getCode().toString();
@@ -71,14 +67,6 @@ public class BombermanGame extends Application {
                     keyInput.remove(code);
                 }
         );
-
-        AnimationTimer timer = new AnimationTimer() {
-            @Override
-            public void handle(long l) {
-                maze.update(keyInput, l);
-                maze.render(canvas, gc);
-            }
-        };
-        timer.start();
+        //stage.show();
     }
 }
