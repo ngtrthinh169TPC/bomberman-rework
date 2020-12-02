@@ -3,18 +3,28 @@ package entities;
 import graphics.Sprite;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public abstract class GameCharacter extends Entity {
 
     private static final int WALK_TIME = 6;
+    protected static final int DEAD_TIME = 3 * WALK_TIME;
     protected double moveSpeed = 0;
     protected double rightVelocity;
     protected double downVelocity;
+    protected boolean isDead;
+    protected long deadTimer = 0;
 
     private int frameTimer = 0;
     private int frameNumber = 0;
     private String currentDirection = "RIGHT";
+
+    public boolean isDead() {
+        return isDead;
+    }
+
+    public boolean endDeadScene() {
+        return deadTimer >= DEAD_TIME;
+    }
 
     public GameCharacter(double x, double y, Sprite sprite) {
         super(x, y, sprite);
@@ -22,8 +32,20 @@ public abstract class GameCharacter extends Entity {
         this.downVelocity = 0;
         this.collidable = true;
         this.destructible = true;
+        this.isDead = false;
     }
 
+    @Override
+    public void update() {
+        if (!this.isDead) {
+            this.xLeft += this.rightVelocity * this.moveSpeed;
+            this.yTop += this.downVelocity * this.moveSpeed;
+        } else {
+            deadTimer ++;
+        }
+    }
+
+    /** Chuyển sang sprite tiếp theo để tạo hiệu ứng di chuyển. **/
     public void getNextImg(ArrayList<Sprite> sprites, String direction) {
         if (direction.equals(currentDirection)) {
             this.frameTimer ++;
@@ -40,39 +62,10 @@ public abstract class GameCharacter extends Entity {
         this.img = sprites.get(frameNumber).getFxImage();
     }
 
-    @Override
-    public void update() {
-        this.xLeft += this.rightVelocity * this.moveSpeed;
-        this.yTop += this.downVelocity * this.moveSpeed;
-    }
-
+    /** Cập nhật vận tốc, aka hướng di chuyển. **/
     public void velocityUpdate(double rv, double dv) {
         this.rightVelocity = rv;
         this.downVelocity = dv;
-    }
-
-    /** Phát hiện va chạm **/
-    public Entity collisionDetected(List<Entity> entities) {
-        for (Entity e : entities) {
-            if (e.isCollidable()) {
-                if (this.collideWith(e)) {
-                    return e;
-                }
-            }
-        }
-        return null;
-    }
-
-    /** Kiểm tra va chạm **/
-    private boolean collideWith(Entity entity) {
-        this.nextLeft = this.xLeft + this.rightVelocity * this.moveSpeed;
-        this.nextRight = this.nextLeft + this.realWidth;
-        this.nextTop = this.yTop + this.downVelocity * this.moveSpeed;
-        this.nextBottom = this.nextTop + this.realHeight;
-        return !((this.nextRight <= entity.xLeft)
-                || (this.nextLeft >= entity.xLeft + entity.realWidth)
-                || (this.nextBottom <= entity.yTop)
-                || (this.nextTop >= entity.yTop + entity.realHeight));
     }
 
     /** Xử lí khi xảy ra va chạm **/

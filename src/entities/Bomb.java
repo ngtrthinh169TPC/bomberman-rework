@@ -10,8 +10,8 @@ public class Bomb extends Entity {
         this.detonationTimer = timer;
     }
 
-    public long getDetonationTimer() {
-        return detonationTimer;
+    public boolean detonated(long timer) {
+        return (timer - detonationTimer) / 1000000000 >= DETONATE_TIME;
     }
 
     public void setCollidable(boolean collidable) {

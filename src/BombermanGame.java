@@ -67,6 +67,5 @@ public class BombermanGame extends Application {
                     keyInput.remove(code);
                 }
         );
-        //stage.show();
     }
 }

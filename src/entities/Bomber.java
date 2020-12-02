@@ -2,10 +2,13 @@ package entities;
 
 import graphics.Sprite;
 
+import java.util.ArrayList;
+
 public class Bomber extends GameCharacter {
 
     public static final double BOMBER_SPEED = 1.7;
     public static final int BOMB_AMOUNT = 1;
+
     private int availableBomb = BOMB_AMOUNT;
 
     public Bomber(double x, double y, Sprite sprite) {
@@ -17,7 +20,7 @@ public class Bomber extends GameCharacter {
         return availableBomb > 0;
     }
 
-    public void placeBomb() {
+    public void dropBomb() {
         if (availableBomb > 0) {
             availableBomb --;
         }
@@ -25,5 +28,33 @@ public class Bomber extends GameCharacter {
 
     public void addBomb() {
         availableBomb ++;
+    }
+
+    public void control(String action, ArrayList<Bomb> bombs, long timer) {
+        switch (action) {
+            case "LEFT":
+                this.velocityUpdate(-1, 0);
+                this.getNextImg(Sprite.bomber_left, action);
+                break;
+            case "RIGHT":
+                this.velocityUpdate(1, 0);
+                this.getNextImg(Sprite.bomber_right, action);
+                break;
+            case "UP":
+                this.velocityUpdate(0, -1);
+                this.getNextImg(Sprite.bomber_up, action);
+                break;
+            case "DOWN":
+                this.velocityUpdate(0, 1);
+                this.getNextImg(Sprite.bomber_down, action);
+                break;
+            case "SPACE":
+                if (this.haveBomb()) {
+                    this.dropBomb();
+                    bombs.add(new Bomb(this.getXUnit(), this.getYUnit(), Sprite.bomb.get(0), timer));
+                }
+            default:
+                break;
+        }
     }
 }

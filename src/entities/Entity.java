@@ -4,6 +4,8 @@ import graphics.Sprite;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
+import java.util.List;
+
 public abstract class Entity {
     protected double xLeft; /* Coordinate counted from TOP_LEFT corner **/
     protected double yTop;
@@ -50,4 +52,28 @@ public abstract class Entity {
     }
 
     public abstract void update();
+
+    /** Phát hiện va chạm **/
+    public Entity collisionDetected(List<Entity> entities) {
+        for (Entity e : entities) {
+            if (e.isCollidable()) {
+                if (this.collideWith(e)) {
+                    return e;
+                }
+            }
+        }
+        return null;
+    }
+
+    /** Kiểm tra va chạm **/
+    private boolean collideWith(Entity entity) {
+        this.nextLeft = this.xLeft;
+        this.nextRight = this.nextLeft + this.realWidth;
+        this.nextTop = this.yTop;
+        this.nextBottom = this.nextTop + this.realHeight;
+        return !((this.nextRight <= entity.xLeft)
+                || (this.nextLeft >= entity.xLeft + entity.realWidth)
+                || (this.nextBottom <= entity.yTop)
+                || (this.nextTop >= entity.yTop + entity.realHeight));
+    }
 }
