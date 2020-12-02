@@ -359,7 +359,7 @@ public class Sprite {
     |--------------------------------------------------------------------------
     */
 
-    public static ArrayList<Sprite> brick_exploded = new ArrayList<>(
+    public static ArrayList<Sprite> brick_broken = new ArrayList<>(
             Arrays.asList(
                     new Sprite(DEFAULT_SIZE, 7, 1, SpriteSheet.tiles, 16, 16),
                     new Sprite(DEFAULT_SIZE, 7, 2, SpriteSheet.tiles, 16, 16),

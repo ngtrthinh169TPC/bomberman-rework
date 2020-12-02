@@ -9,6 +9,7 @@ import java.util.List;
 
 public abstract class Entity {
     protected int NEXT_SPRITE_TIME = 6;
+    public static final double EXPIRE_TIME = 0.7;
 
     protected double xLeft; /* Coordinate counted from TOP_LEFT corner **/
     protected double yTop;
@@ -18,6 +19,7 @@ public abstract class Entity {
     protected boolean collidable;
     protected boolean destructible;
     protected boolean isDoomed = false;
+    protected long destroyedTimer;
 
     protected double nextLeft;
     protected double nextTop;
@@ -26,7 +28,7 @@ public abstract class Entity {
 
     private int frameTimer = 0;
     private int frameNumber = 0;
-    private final ArrayList<Sprite> sprites;
+    private ArrayList<Sprite> sprites;
 
     /** Constructor that converts unit coordinate into canvas coordinate **/
     public Entity(double xUnit, double yUnit, ArrayList<Sprite> sprites) {
@@ -66,6 +68,19 @@ public abstract class Entity {
 
     public boolean isDoomed() {
         return isDoomed;
+    }
+
+    public boolean expired(long timer) {
+        if (!this.isDoomed) {
+            return false;
+        }
+        return (double)(timer - destroyedTimer) / 1000000000 >= EXPIRE_TIME;
+    }
+
+    public void setBroken(ArrayList<Sprite> sprites, long timer) {
+        this.sprites = sprites;
+        this.img = sprites.get(0).getFxImage();
+        this.destroyedTimer = timer;
     }
 
     public abstract void update();

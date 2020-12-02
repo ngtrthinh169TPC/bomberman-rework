@@ -93,7 +93,10 @@ public class Maze {
             bombProcess(timer);
             bomberUpdate();
         }
-        flameUpdate(timer);
+        flames.removeIf(f -> f.expired(timer));
+        flames.forEach(Entity::update);
+        environment.removeIf(e -> e.expired(timer));
+        environment.forEach(Entity::update);
     }
 
     /** Render mọi thứ lên màn hình. **/
@@ -132,7 +135,10 @@ public class Maze {
                             && e.getXUnit() == xUnit + Flame.moveX.get(i) * j
                             && e.getYUnit() == yUnit + Flame.moveY.get(i) * j) {
                         flameIsBlocked = true;
-                        e.setDoomed(true);
+                        if (e.isDestructible()) {
+                            e.setDoomed(true);
+                            e.setBroken(Sprite.brick_broken, timer);
+                        }
                     }
                 }
 
@@ -152,26 +158,15 @@ public class Maze {
             }
         }
 
-        /* Xóa flames nằm ngoài bản đồ */
-        flames.removeIf(f -> (f.getXUnit() < 0) || (f.getXUnit() > Maze.WIDTH) ||
-                (f.getYUnit() < 0) || (f.getYUnit() > Maze.HEIGHT));
-
         /* Xóa vật thể bị phá hủy bởi flame. */
         for (Flame f : flames) {
-            environment.removeIf(e -> f.collideWith(e) && e.isDestructible());
+            //environment.removeIf(e -> f.collideWith(e) && e.isDestructible());
             enemies.stream().filter(f::collideWith).forEach(g -> g.setDoomed(true));
             enemies.removeIf(GameCharacter::isDoomed);
         }
 
-        /* Xóa flames nếu gặp Walls. */
-        /*for (Entity e : environment) {
-            if (e.isCollidable() && !e.isDestructible()) {
-                flames.removeIf(b -> b.getXUnit() == e.getXUnit() && b.getYUnit() == e.getYUnit());
-            }
-        }*/
-
         /* Hoạt cảnh dính bom của bomber */
-        for (Bomber p : players) {
+        /*for (Bomber p : players) {
             int x = p.getXUnit();
             int y = p.getYUnit();
             if ((p.getXUnit() == xUnit && p.getYUnit() == yUnit - 1)
@@ -182,7 +177,7 @@ public class Maze {
                 players.remove(p);
                 players.add(new Bomber(x, y, Sprite.bomber_dead));
             }
-        }
+        }*/
     }
 
     /** Xử lí input từ bàn phím. **/
@@ -229,16 +224,6 @@ public class Maze {
                 b.snapCollision(collidedBrick);
             }
         }
-    }
-
-    /** Update trạng thái cho Flame. **/
-    private void flameUpdate(long timer) {
-        /* Tắt lửa. */
-        if (!flames.isEmpty()) {
-            flames.removeIf(f -> f.expired(timer));
-        }
-
-        flames.forEach(Entity::getNextImg);
     }
 
     /** Gọi hàm này khi hết màn chơi hiện tại. **/

@@ -9,10 +9,13 @@ public class Brick extends Entity {
         super(x, y, sprites);
         this.collidable = true;
         this.destructible = true;
+        this.NEXT_SPRITE_TIME = 15;
     }
 
     @Override
     public void update() {
-        /* Check if this was destroyed by flames **/
+        if (this.isDoomed) {
+            this.getNextImg();
+        }
     }
 }
