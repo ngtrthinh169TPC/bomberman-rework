@@ -31,9 +31,8 @@ public abstract class GameCharacter extends Entity {
         if (!this.isDoomed) {
             this.xLeft += this.rightVelocity * this.moveSpeed;
             this.yTop += this.downVelocity * this.moveSpeed;
-        } else {
-            this.getNextImg();
         }
+        this.getNextImg();
     }
 
     /** Chuyển sang sprite tiếp theo để tạo hiệu ứng di chuyển. **/

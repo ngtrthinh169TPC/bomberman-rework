@@ -8,7 +8,7 @@ import java.util.Random;
 public class Ballom extends GameCharacter {
     public Ballom(double x, double y, ArrayList<Sprite> sprites) {
         super(x, y, sprites);
-        this.moveSpeed = 1;
+        this.moveSpeed = 0.6;
         this.getDirection();
     }
 

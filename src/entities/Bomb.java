@@ -16,9 +16,9 @@ public class Bomb extends Entity {
         return (timer - detonationTimer) / 1000000000 >= DETONATE_TIME;
     }
 
-    /*public void setCollidable(boolean collidable) {
-        this.collidable = collidable;
-    }*/
+    public void setCollidable() {
+        this.collidable = true;
+    }
 
     @Override
     public void update() {

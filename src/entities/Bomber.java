@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public class Bomber extends GameCharacter {
 
-    public static final double BOMBER_SPEED = 1.7;
+    public static final double BOMBER_SPEED = 1.8;
     private final int BOMB_AMOUNT = 1;
     public static final int FLAME_SIZE = 2;
     private int availableBomb = BOMB_AMOUNT;
@@ -14,6 +14,16 @@ public class Bomber extends GameCharacter {
     public Bomber(double x, double y, ArrayList<Sprite> sprites) {
         super(x, y, sprites);
         this.moveSpeed = BOMBER_SPEED;
+    }
+
+    @Override
+    public void update(){
+        if (!this.isDoomed) {
+            this.xLeft += this.rightVelocity * this.moveSpeed;
+            this.yTop += this.downVelocity * this.moveSpeed;
+        } else {
+            this.getNextImg();
+        }
     }
 
     @Override

@@ -104,18 +104,6 @@ public abstract class Entity {
         this.img = sprites.get(frameNumber).getFxImage();
     }
 
-    /** Phát hiện va chạm **/
-    public Entity collisionDetected(List<Entity> entities) {
-        for (Entity e : entities) {
-            if (e.isCollidable()) {
-                if (this.collideWith(e)) {
-                    return e;
-                }
-            }
-        }
-        return null;
-    }
-
     /** Kiểm tra va chạm **/
     public boolean collideWith(Entity entity) {
         this.nextLeft = this.xLeft;

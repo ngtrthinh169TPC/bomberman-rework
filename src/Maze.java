@@ -54,6 +54,7 @@ public class Maze {
                             break;
                         case 'x':
                             entities.add(new Portal(j, i, Sprite.portal));
+                            environment.add(new Brick(j, i, Sprite.brick));
                             break;
                         case 'p':
                             players.add(new Bomber(j, i, Sprite.bomber_right));
@@ -196,6 +197,12 @@ public class Maze {
 
     /** Xử lí kích nổ bom. **/
     private void bombProcess(long timer) {
+        for (Bomb b : bombs) {
+            if (!b.collideWith(players.get(0))) {
+                b.setCollidable();
+            }
+        }
+
         /* Cho nổ những quả bom đã hết thời gian. */
         if (!bombs.isEmpty()) {
             for (Bomb b : bombs) {
@@ -218,9 +225,19 @@ public class Maze {
             b.update();
             /* Nếu Bomber chưa toang. */
             if (players.get(0).notDoomedYet()) {
-                Entity collidedBrick = b.collisionDetected(environment);
-                if (collidedBrick != null) {
-                    b.snapCollision(collidedBrick);
+                for (Entity e : environment) {
+                    if (e.isCollidable()) {
+                        if (b.collideWith(e)){
+                            b.snapCollision(e);
+                        }
+                    }
+                }
+                for (Bomb bomb : bombs) {
+                    if (bomb.isCollidable()) {
+                        if (b.collideWith(bomb)) {
+                            b.snapCollision(bomb);
+                        }
+                    }
                 }
 
                 for (GameCharacter g : enemies) {
@@ -238,11 +255,21 @@ public class Maze {
         for (GameCharacter g : enemies) {
             g.update();
             /* Nếu enemy này chưa toang. */
-            if (players.get(0).notDoomedYet()) {
-                Entity collidedBrick = g.collisionDetected(environment);
-                if (collidedBrick != null) {
-                    g.snapCollision(collidedBrick);
-                    g.getDirection();
+            if (g.notDoomedYet()) {
+                for (Entity e : environment) {
+                    if (e.isCollidable()) {
+                        if (g.collideWith(e)){
+                            g.snapCollision(e);
+                            g.getDirection();
+                        }
+                    }
+                }
+                for (Bomb bomb : bombs) {
+                    if (bomb.isCollidable()) {
+                        if (g.collideWith(bomb)) {
+                            g.snapCollision(bomb);
+                        }
+                    }
                 }
             }
         }
