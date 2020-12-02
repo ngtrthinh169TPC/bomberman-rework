@@ -11,13 +11,14 @@ public class Bomber extends GameCharacter {
     public static final int FLAME_SIZE = 2;
     private int availableBomb = BOMB_AMOUNT;
 
-    public int getFLAME_SIZE() {
-        return FLAME_SIZE;
-    }
-
     public Bomber(double x, double y, ArrayList<Sprite> sprites) {
         super(x, y, sprites);
         this.moveSpeed = BOMBER_SPEED;
+    }
+
+    @Override
+    public void getDirection() {
+        /* Bomber will not automatically move. */
     }
 
     public boolean haveBomb() {

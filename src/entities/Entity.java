@@ -5,9 +5,20 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public abstract class Entity {
+    public static final ArrayList<Integer> moveX = new ArrayList<>(
+            Arrays.asList(
+                    1, -1, 0, 0
+            )
+    );
+    public static final ArrayList<Integer> moveY = new ArrayList<>(
+            Arrays.asList(
+                    0, 0, 1, -1
+            )
+    );
     public static final int NEXT_SPRITE_TIME = 15;
     public static final double EXPIRE_TIME = 0.7;
 
@@ -58,13 +69,12 @@ public abstract class Entity {
         return destructible;
     }
 
-    public void render(GraphicsContext gc) {
-        gc.drawImage(img, xLeft, yTop);
+    public boolean notDoomedYet() {
+        return !isDoomed;
     }
 
-    public void setDoomed(long timer) {
-        this.isDoomed = true;
-        this.destroyedTimer = timer;
+    public void render(GraphicsContext gc) {
+        gc.drawImage(img, xLeft, yTop);
     }
 
     public boolean expired(long timer) {
@@ -74,7 +84,7 @@ public abstract class Entity {
         return (double)(timer - destroyedTimer) / 1000000000 >= EXPIRE_TIME;
     }
 
-    /** Chỉ dùng cho Brick, Enemy và Bomber bị đốt. **/
+    /** Dùng cho Brick, Enemy và Bomber bị đốt. **/
     public void setBroken(ArrayList<Sprite> sprites, long timer) {
         this.isDoomed = true;
         this.sprites = sprites;

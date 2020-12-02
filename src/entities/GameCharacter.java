@@ -16,10 +16,6 @@ public abstract class GameCharacter extends Entity {
     private int frameNumber = 0;
     private String currentDirection = "RIGHT";
 
-    /*public boolean endDeadScene() {
-        return deadTimer >= DEAD_TIME;
-    }*/
-
     public GameCharacter(double x, double y, ArrayList<Sprite> sprites) {
         super(x, y, sprites);
         this.rightVelocity = 0;
@@ -27,6 +23,8 @@ public abstract class GameCharacter extends Entity {
         this.collidable = true;
         this.destructible = true;
     }
+
+    public abstract void getDirection();
 
     @Override
     public void update() {

@@ -90,13 +90,27 @@ public class Maze {
     public void update(ArrayList<String> keyInput, long timer) {
         if (!players.get(0).expired(timer)) {
             inputProcess(keyInput, timer);
-            bombProcess(timer);
-            bomberUpdate();
+            bomberUpdate(timer);
+            enemiesUpdate(timer);
 
+            bombProcess(timer);
             flames.removeIf(f -> f.expired(timer));
             flames.forEach(Entity::update);
-            enemies.removeIf(g -> g.expired(timer));
-            enemies.forEach(Entity::update);
+
+            /* Đốt bỏ m* mấy con đứng trong vùng lửa. */
+            for (Flame flame : flames) {
+                for (Bomber b : players) {
+                    if (b.notDoomedYet() && flame.collideWith(b)) {
+                        b.setBroken(Sprite.bomber_dead, timer);
+                    }
+                }
+                for (GameCharacter g : enemies) {
+                    if (g.notDoomedYet() && flame.collideWith(g)) {
+                        g.setBroken(Sprite.mob_dead, timer);
+                    }
+                }
+            }
+
             environment.removeIf(e -> e.expired(timer));
             environment.forEach(Entity::update);
         } else {
@@ -138,10 +152,10 @@ public class Maze {
             boolean flameIsBlocked = false;
             for (int j = 1; j <= Bomber.FLAME_SIZE; ++ j) {
                 for (Entity e : environment) {
-                    /* Gặp Wall hoặc Brick thì dừng lại */
+                    /* Gặp Wall hoặc Brick thì đánh dấu để dừng lại */
                     if (e.isCollidable()
-                            && e.getXUnit() == xUnit + Flame.moveX.get(i) * j
-                            && e.getYUnit() == yUnit + Flame.moveY.get(i) * j) {
+                            && e.getXUnit() == xUnit + Entity.moveX.get(i) * j
+                            && e.getYUnit() == yUnit + Entity.moveY.get(i) * j) {
                         flameIsBlocked = true;
                         if (e.isDestructible()) {
                             e.setBroken(Sprite.brick_broken, timer);
@@ -154,21 +168,13 @@ public class Maze {
                 }
 
                 if (j < Bomber.FLAME_SIZE) {
-                    flames.add(new
-                            Flame(xUnit + Flame.moveX.get(i) * j, yUnit + Flame.moveY.get(i) * j,
-                            Sprite.explosion_middle.get(i), timer));
+                    flames.add(new Flame(xUnit + Entity.moveX.get(i) * j,
+                            yUnit + Entity.moveY.get(i) * j, Sprite.explosion_middle.get(i), timer));
                 } else {
-                    flames.add(new
-                            Flame(xUnit + Flame.moveX.get(i) * j, yUnit + Flame.moveY.get(i) * j,
-                            Sprite.explosion_end.get(i), timer));
+                    flames.add(new Flame(xUnit + Entity.moveX.get(i) * j,
+                            yUnit + Entity.moveY.get(i) * j, Sprite.explosion_end.get(i), timer));
                 }
             }
-        }
-
-        /* Xóa vật thể bị phá hủy bởi flame. */
-        for (Flame f : flames) {
-            players.stream().filter(f::collideWith).forEach(b -> b.setBroken(Sprite.bomber_dead, timer));
-            enemies.stream().filter(f::collideWith).forEach(g -> g.setBroken(Sprite.mob_dead, timer));
         }
     }
 
@@ -188,15 +194,14 @@ public class Maze {
         players.get(0).control(action, bombs, timer);
     }
 
-    /** Xử lí trạng thái bom. **/
+    /** Xử lí kích nổ bom. **/
     private void bombProcess(long timer) {
-        /* Thực hiện nổ những quả bom đã hết thời gian. */
+        /* Cho nổ những quả bom đã hết thời gian. */
         if (!bombs.isEmpty()) {
             for (Bomb b : bombs) {
                 if (b.detonated(timer)) {
                     int x = b.getXUnit();
                     int y = b.getYUnit();
-                    // thêm vụ nổ vào đây
                     flames.add(new Flame(x, y, Sprite.explosion_centre, timer));
                     explosive(x, y, timer);
                     players.get(0).addBomb();
@@ -208,12 +213,37 @@ public class Maze {
     }
 
     /** Update vị trí mới cho Bomber. **/
-    private void bomberUpdate() {
+    private void bomberUpdate(long timer) {
         for (Bomber b : players) {
             b.update();
-            Entity collidedBrick = b.collisionDetected(environment);
-            if (collidedBrick != null) {
-                b.snapCollision(collidedBrick);
+            /* Nếu Bomber chưa toang. */
+            if (players.get(0).notDoomedYet()) {
+                Entity collidedBrick = b.collisionDetected(environment);
+                if (collidedBrick != null) {
+                    b.snapCollision(collidedBrick);
+                }
+
+                for (GameCharacter g : enemies) {
+                    if (b.collideWith(g)) {
+                        b.setBroken(Sprite.bomber_dead, timer);
+                    }
+                }
+            }
+        }
+    }
+
+    /** Update vị trí mới cho Enemies. **/
+    private void enemiesUpdate(long timer) {
+        enemies.removeIf(g -> g.expired(timer));
+        for (GameCharacter g : enemies) {
+            g.update();
+            /* Nếu enemy này chưa toang. */
+            if (players.get(0).notDoomedYet()) {
+                Entity collidedBrick = g.collisionDetected(environment);
+                if (collidedBrick != null) {
+                    g.snapCollision(collidedBrick);
+                    g.getDirection();
+                }
             }
         }
     }
