@@ -21,7 +21,6 @@ public class Flame extends Entity {
         super(x, y, sprites);
         this.collidable = true;
         this.destroyedTimer = timer;
-        this.NEXT_SPRITE_TIME = 15;
         this.isDoomed = true;
     }
 

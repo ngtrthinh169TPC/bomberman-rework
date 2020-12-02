@@ -231,6 +231,17 @@ public class Sprite {
     public static Sprite oneal_dead = new Sprite(DEFAULT_SIZE, 11, 3, SpriteSheet.tiles, 16, 16);
     /* ----------------------------------------------------------- **/
 
+    /* Dead mobs */
+    /* ----------------------------------------------------------- **/
+    public static ArrayList<Sprite> mob_dead = new ArrayList<>(
+            Arrays.asList(
+                    new Sprite(DEFAULT_SIZE, 15, 0, SpriteSheet.tiles, 16, 16),
+                    new Sprite(DEFAULT_SIZE, 15, 1, SpriteSheet.tiles, 16, 16),
+                    new Sprite(DEFAULT_SIZE, 15, 2, SpriteSheet.tiles, 16, 16)
+            )
+    );
+    /* ----------------------------------------------------------- **/
+
     /*
     |--------------------------------------------------------------------------
     | GameCharacter
@@ -268,12 +279,9 @@ public class Sprite {
     public static Sprite kondoria_right3 = new Sprite(DEFAULT_SIZE, 11, 7, SpriteSheet.tiles, 16, 16);
 
     public static Sprite kondoria_dead = new Sprite(DEFAULT_SIZE, 10, 8, SpriteSheet.tiles, 16, 16);
+    */
 
-    //ALL
-    public static Sprite mob_dead1 = new Sprite(DEFAULT_SIZE, 15, 0, SpriteSheet.tiles, 16, 16);
-    public static Sprite mob_dead2 = new Sprite(DEFAULT_SIZE, 15, 1, SpriteSheet.tiles, 16, 16);
-    public static Sprite mob_dead3 = new Sprite(DEFAULT_SIZE, 15, 2, SpriteSheet.tiles, 16, 16);
-
+    /*
     |--------------------------------------------------------------------------
     | FlameSegment Sprites
     |--------------------------------------------------------------------------
@@ -355,7 +363,7 @@ public class Sprite {
 
     /*
     |--------------------------------------------------------------------------
-    | Brick FlameSegment
+    | Brick FlameSegments
     |--------------------------------------------------------------------------
     */
 

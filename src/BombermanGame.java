@@ -34,7 +34,7 @@ public class BombermanGame extends Application {
             public void handle(long l) {
                 maze.update(keyInput, l);
                 maze.render(canvas, gc);
-                if (maze.levelStatus() == 1) {
+                if (maze.levelStatus(l) == 1) {
                     switchLevel(2);
                 }
             }

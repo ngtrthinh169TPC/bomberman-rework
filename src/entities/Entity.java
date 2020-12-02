@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Entity {
-    protected int NEXT_SPRITE_TIME = 6;
+    public static final int NEXT_SPRITE_TIME = 15;
     public static final double EXPIRE_TIME = 0.7;
 
     protected double xLeft; /* Coordinate counted from TOP_LEFT corner **/
@@ -62,12 +62,9 @@ public abstract class Entity {
         gc.drawImage(img, xLeft, yTop);
     }
 
-    public void setDoomed(boolean doomed) {
-        this.isDoomed = doomed;
-    }
-
-    public boolean isDoomed() {
-        return isDoomed;
+    public void setDoomed(long timer) {
+        this.isDoomed = true;
+        this.destroyedTimer = timer;
     }
 
     public boolean expired(long timer) {
@@ -77,7 +74,9 @@ public abstract class Entity {
         return (double)(timer - destroyedTimer) / 1000000000 >= EXPIRE_TIME;
     }
 
+    /** Chỉ dùng cho Brick, Enemy và Bomber bị đốt. **/
     public void setBroken(ArrayList<Sprite> sprites, long timer) {
+        this.isDoomed = true;
         this.sprites = sprites;
         this.img = sprites.get(0).getFxImage();
         this.destroyedTimer = timer;

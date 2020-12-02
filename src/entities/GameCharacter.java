@@ -7,19 +7,18 @@ import java.util.ArrayList;
 public abstract class GameCharacter extends Entity {
 
     private static final int WALK_TIME = 6;
-    protected static final int DEAD_TIME = 3 * WALK_TIME;
+    //protected static final int DEAD_TIME = 3 * WALK_TIME;
     protected double moveSpeed = 0;
     protected double rightVelocity;
     protected double downVelocity;
-    protected long deadTimer = 0;
 
     private int frameTimer = 0;
     private int frameNumber = 0;
     private String currentDirection = "RIGHT";
 
-    public boolean endDeadScene() {
+    /*public boolean endDeadScene() {
         return deadTimer >= DEAD_TIME;
-    }
+    }*/
 
     public GameCharacter(double x, double y, ArrayList<Sprite> sprites) {
         super(x, y, sprites);
@@ -35,7 +34,7 @@ public abstract class GameCharacter extends Entity {
             this.xLeft += this.rightVelocity * this.moveSpeed;
             this.yTop += this.downVelocity * this.moveSpeed;
         } else {
-            deadTimer ++;
+            this.getNextImg();
         }
     }
 
