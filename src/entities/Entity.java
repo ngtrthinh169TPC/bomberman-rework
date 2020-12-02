@@ -4,9 +4,12 @@ import graphics.Sprite;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Entity {
+    protected int NEXT_SPRITE_TIME = 6;
+
     protected double xLeft; /* Coordinate counted from TOP_LEFT corner **/
     protected double yTop;
     protected Image img; /* Current sprite's image **/
@@ -14,19 +17,25 @@ public abstract class Entity {
     protected double realHeight;
     protected boolean collidable;
     protected boolean destructible;
+    protected boolean isDoomed = false;
 
     protected double nextLeft;
     protected double nextTop;
     protected double nextRight;
     protected double nextBottom;
 
+    private int frameTimer = 0;
+    private int frameNumber = 0;
+    private final ArrayList<Sprite> sprites;
+
     /** Constructor that converts unit coordinate into canvas coordinate **/
-    public Entity(double xUnit, double yUnit, Sprite sprite) {
+    public Entity(double xUnit, double yUnit, ArrayList<Sprite> sprites) {
         this.xLeft = xUnit * Sprite.SCALED_SIZE;
         this.yTop = yUnit * Sprite.SCALED_SIZE;
-        this.img = sprite.getFxImage();
-        this.realWidth = sprite.getRealWidth() * Sprite.SCALE_RATIO;
-        this.realHeight = sprite.getRealHeight() * Sprite.SCALE_RATIO;
+        this.sprites = sprites;
+        this.img = sprites.get(0).getFxImage();
+        this.realWidth = sprites.get(0).getRealWidth() * Sprite.SCALE_RATIO;
+        this.realHeight = sprites.get(0).getRealHeight() * Sprite.SCALE_RATIO;
         this.collidable = false;
         this.destructible = false;
     }
@@ -51,7 +60,25 @@ public abstract class Entity {
         gc.drawImage(img, xLeft, yTop);
     }
 
+    public void setDoomed(boolean doomed) {
+        this.isDoomed = doomed;
+    }
+
+    public boolean isDoomed() {
+        return isDoomed;
+    }
+
     public abstract void update();
+
+    public void getNextImg() {
+        this.frameTimer ++;
+        if (this.frameTimer >= NEXT_SPRITE_TIME) {
+            this.frameTimer %= NEXT_SPRITE_TIME;
+            this.frameNumber = (this.frameNumber + 1) % 3;
+            // 3 is the number of sprites for an entity
+        }
+        this.img = sprites.get(frameNumber).getFxImage();
+    }
 
     /** Phát hiện va chạm **/
     public Entity collisionDetected(List<Entity> entities) {
@@ -66,7 +93,7 @@ public abstract class Entity {
     }
 
     /** Kiểm tra va chạm **/
-    private boolean collideWith(Entity entity) {
+    public boolean collideWith(Entity entity) {
         this.nextLeft = this.xLeft;
         this.nextRight = this.nextLeft + this.realWidth;
         this.nextTop = this.yTop;

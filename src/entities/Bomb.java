@@ -2,11 +2,13 @@ package entities;
 
 import graphics.Sprite;
 
+import java.util.ArrayList;
+
 public class Bomb extends Entity {
     private final long detonationTimer;
     public static final long DETONATE_TIME = 2;
-    public Bomb(int x, int y, Sprite sprite, long timer) {
-        super (x, y, sprite);
+    public Bomb(double x, double y, ArrayList<Sprite> sprites, long timer) {
+        super (x, y, sprites);
         this.detonationTimer = timer;
     }
 
@@ -14,9 +16,9 @@ public class Bomb extends Entity {
         return (timer - detonationTimer) / 1000000000 >= DETONATE_TIME;
     }
 
-    public void setCollidable(boolean collidable) {
+    /*public void setCollidable(boolean collidable) {
         this.collidable = collidable;
-    }
+    }*/
 
     @Override
     public void update() {

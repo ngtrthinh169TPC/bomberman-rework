@@ -4,6 +4,7 @@ import javafx.scene.image.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 /** Store all pixels of a sprite. **/
 public class Sprite {
@@ -103,14 +104,26 @@ public class Sprite {
 
     /* Board objects **/
     /* ----------------------------------------------------------- **/
-    public static Sprite portal
-            = new Sprite(DEFAULT_SIZE, 4, 0, SpriteSheet.tiles, 14, 14);
-    public static Sprite wall
-            = new Sprite(DEFAULT_SIZE, 5, 0, SpriteSheet.tiles, 16, 16);
-    public static Sprite grass
-            = new Sprite(DEFAULT_SIZE, 6, 0, SpriteSheet.tiles, 16, 16);
-    public static Sprite brick
-            = new Sprite(DEFAULT_SIZE, 7, 0, SpriteSheet.tiles, 16, 16);
+    public static ArrayList<Sprite> portal = new ArrayList<>(
+            Collections.singletonList(
+                    new Sprite(DEFAULT_SIZE, 4, 0, SpriteSheet.tiles, 14, 14)
+            )
+    );
+    public static ArrayList<Sprite> wall = new ArrayList<>(
+            Collections.singletonList(
+                    new Sprite(DEFAULT_SIZE, 5, 0, SpriteSheet.tiles, 16, 16)
+            )
+    );
+    public static ArrayList<Sprite> grass = new ArrayList<>(
+            Collections.singletonList(
+                    new Sprite(DEFAULT_SIZE, 6, 0, SpriteSheet.tiles, 16, 16)
+            )
+    );
+    public static ArrayList<Sprite> brick = new ArrayList<>(
+            Collections.singletonList(
+                    new Sprite(DEFAULT_SIZE, 7, 0, SpriteSheet.tiles, 16, 16)
+            )
+    );
     /* ----------------------------------------------------------- **/
 
     /*
@@ -266,7 +279,7 @@ public class Sprite {
     |--------------------------------------------------------------------------
     */
 
-    public static ArrayList<Sprite> bomb_exploded = new ArrayList<>(
+    public static ArrayList<Sprite> explosion_centre = new ArrayList<>(
             Arrays.asList(
                     new Sprite(DEFAULT_SIZE, 0, 4, SpriteSheet.tiles, 16, 16),
                     new Sprite(DEFAULT_SIZE, 0, 5, SpriteSheet.tiles, 16, 16),
@@ -290,7 +303,16 @@ public class Sprite {
             )
     );
 
-    public static ArrayList<Sprite> explosion_horizontal_left_last = new ArrayList<>(
+    public static ArrayList<ArrayList<Sprite>> explosion_middle = new ArrayList<>(
+            Arrays.asList(
+                    explosion_horizontal,
+                    explosion_horizontal,
+                    explosion_vertical,
+                    explosion_vertical
+            )
+    );
+
+    public static ArrayList<Sprite> explosion_left_end = new ArrayList<>(
             Arrays.asList(
                     new Sprite(DEFAULT_SIZE, 0, 7, SpriteSheet.tiles, 16, 16),
                     new Sprite(DEFAULT_SIZE, 0, 8, SpriteSheet.tiles, 16, 16),
@@ -298,7 +320,7 @@ public class Sprite {
             )
     );
 
-    public static ArrayList<Sprite> explosion_horizontal_right_last = new ArrayList<>(
+    public static ArrayList<Sprite> explosion_right_end = new ArrayList<>(
             Arrays.asList(
                     new Sprite(DEFAULT_SIZE, 2, 7, SpriteSheet.tiles, 16, 16),
                     new Sprite(DEFAULT_SIZE, 2, 8, SpriteSheet.tiles, 16, 16),
@@ -306,7 +328,7 @@ public class Sprite {
             )
     );
 
-    public static ArrayList<Sprite> explosion_vertical_top_last = new ArrayList<>(
+    public static ArrayList<Sprite> explosion_up_end = new ArrayList<>(
             Arrays.asList(
                     new Sprite(DEFAULT_SIZE, 1, 4, SpriteSheet.tiles, 16, 16),
                     new Sprite(DEFAULT_SIZE, 2, 4, SpriteSheet.tiles, 16, 16),
@@ -314,11 +336,20 @@ public class Sprite {
             )
     );
 
-    public static ArrayList<Sprite> explosion_vertical_down_last = new ArrayList<>(
+    public static ArrayList<Sprite> explosion_down_end = new ArrayList<>(
             Arrays.asList(
                     new Sprite(DEFAULT_SIZE, 1, 6, SpriteSheet.tiles, 16, 16),
                     new Sprite(DEFAULT_SIZE, 2, 6, SpriteSheet.tiles, 16, 16),
                     new Sprite(DEFAULT_SIZE, 3, 6, SpriteSheet.tiles, 16, 16)
+            )
+    );
+
+    public static ArrayList<ArrayList<Sprite>> explosion_end = new ArrayList<>(
+            Arrays.asList(
+                    explosion_right_end,
+                    explosion_left_end,
+                    explosion_down_end,
+                    explosion_up_end
             )
     );
 

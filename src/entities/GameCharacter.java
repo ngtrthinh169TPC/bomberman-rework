@@ -11,33 +11,27 @@ public abstract class GameCharacter extends Entity {
     protected double moveSpeed = 0;
     protected double rightVelocity;
     protected double downVelocity;
-    protected boolean isDead;
     protected long deadTimer = 0;
 
     private int frameTimer = 0;
     private int frameNumber = 0;
     private String currentDirection = "RIGHT";
 
-    public boolean isDead() {
-        return isDead;
-    }
-
     public boolean endDeadScene() {
         return deadTimer >= DEAD_TIME;
     }
 
-    public GameCharacter(double x, double y, Sprite sprite) {
-        super(x, y, sprite);
+    public GameCharacter(double x, double y, ArrayList<Sprite> sprites) {
+        super(x, y, sprites);
         this.rightVelocity = 0;
         this.downVelocity = 0;
         this.collidable = true;
         this.destructible = true;
-        this.isDead = false;
     }
 
     @Override
     public void update() {
-        if (!this.isDead) {
+        if (!this.isDoomed) {
             this.xLeft += this.rightVelocity * this.moveSpeed;
             this.yTop += this.downVelocity * this.moveSpeed;
         } else {
