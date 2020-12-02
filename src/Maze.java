@@ -7,6 +7,7 @@ import javafx.scene.media.MediaPlayer;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.time.Duration;
 import java.util.*;
 
 public class Maze {
@@ -19,15 +20,33 @@ public class Maze {
 
     private final ArrayList<Bomber> players = new ArrayList<>();
     private final ArrayList<GameCharacter> enemies = new ArrayList<>();
+    private final ArrayList<Entity> grasses = new ArrayList<>();
     private final ArrayList<Entity> environment = new ArrayList<>();
     private final ArrayList<Bomb> bombs = new ArrayList<>();
     private final ArrayList<Entity> entities = new ArrayList<>(); // Anything else
     private final ArrayList<Flame> flames = new ArrayList<>();
+    private final ArrayList<Entity> Item = new ArrayList<>();
 
     private MediaPlayer mediaPlayer;
 
+    public void play(String sound) {
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    String path = "res\\audio_bomberman\\" + sound + ".mp3";
+                    Media media = new Media(new File(path).toURI().toString());
+                    MediaPlayer mediaPlayer = new MediaPlayer(media);
+                    mediaPlayer.setAutoPlay(true);
+                } catch (Exception e) {
+                    System.err.println(e.getMessage());
+                }
+            }
+        }).start();
+
+    }
+
     /** Khởi tạo màn chơi. **/
-    public Maze(int level, String audioFile) {
+    public Maze(int level) {
         try {
             File file = new File("res/levels/Level" + level + ".txt");
             Scanner sc = new Scanner(file);
@@ -44,7 +63,7 @@ public class Maze {
             for (int i = 0; i < HEIGHT; ++i) {
                 currentLine = sc.nextLine();
                 for (int j = 0; j < WIDTH; ++j) {
-                    environment.add(new Grass(j, i, Sprite.grass));
+                    grasses.add(new Grass(j, i, Sprite.grass));
                     switch (currentLine.charAt(j)) {
                         case '#':
                             environment.add(new Wall(j, i, Sprite.wall));
@@ -64,17 +83,26 @@ public class Maze {
                         case '2':
                             enemies.add(new Oneal(j, i, Sprite.oneal_left));
                             break;
+                        case 'b':
+                            environment.add(new Brick(j, i, Sprite.brick));
+                            Item.add(new BombItem(j, i, Sprite.powerup_bombs));
+                            break;
+                        case 'f':
+                            environment.add(new Brick(j, i, Sprite.brick));
+                            Item.add(new FlameItem(j, i, Sprite.powerup_flames));
+                            break;
+                        case 's':
+                            environment.add(new Brick(j, i, Sprite.brick));
+                            Item.add(new SpeedItem(j, i, Sprite.powerup_speed));
+                            break;
                         default:
                             break;
                     }
                 }
             }
             sc.close();
+            play("03_Stage Theme");
 
-            String bgAudioPath = "res/audio/" + audioFile + ".mp3";
-            Media backgroundAudio = new Media(new File(bgAudioPath).toURI().toString());
-            mediaPlayer = new MediaPlayer(backgroundAudio);
-            mediaPlayer.setAutoPlay(true);
         } catch (FileNotFoundException e) {
             System.out.println("File not found: Level" + level + ".txt");
             //e.printStackTrace();
@@ -93,7 +121,7 @@ public class Maze {
             bomberUpdate(timer);
             enemiesUpdate(timer);
 
-            bombProcess(timer);
+            bombProcess(timer, players.get(0).getFlame_size());
             flames.removeIf(f -> f.expired(timer));
             flames.forEach(Entity::update);
 
@@ -102,18 +130,39 @@ public class Maze {
                 for (Bomber b : players) {
                     if (b.notDoomedYet() && flame.collideWith(b)) {
                         b.setBroken(Sprite.bomber_dead, timer);
+                        play("08_Life Lost");
                     }
                 }
                 for (GameCharacter g : enemies) {
                     if (g.notDoomedYet() && flame.collideWith(g)) {
                         g.setBroken(Sprite.mob_dead, timer);
+                        play("08_Life Lost");
                     }
                 }
             }
 
             environment.removeIf(e -> e.expired(timer));
             environment.forEach(Entity::update);
+
+            if (!Item.isEmpty()) {
+                for (Entity i : Item) {
+                    if (players.get(0).collideWith(i)) {
+                        if (i.isBombItem()) {
+                            players.get(0).addBomb();
+                        }
+                        if (i.isFlameItem()) {
+                            players.get(0).update_flame_size();
+                        }
+                        if (i.isSpeedItem()) {
+                            players.get(0).update_speed();
+                        }
+                    }
+                }
+            }
+
+            Item.removeIf(i -> (i.collideWith(players.get(0))));
         } else {
+            play("08_Life Lost");
             System.out.println("GAME OVER");
             System.exit(0);
         }
@@ -123,6 +172,8 @@ public class Maze {
     /** Render mọi thứ lên màn hình. **/
     public void render(Canvas canvas, GraphicsContext gc) {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        grasses.forEach(g -> g.render(gc));
+        Item.forEach(g -> g.render(gc));
         environment.forEach(g -> g.render(gc));
         entities.forEach(g -> g.render(gc));
         bombs.forEach(g -> g.render(gc));
@@ -144,13 +195,13 @@ public class Maze {
     }
 
     /** Xử lí bom nổ **/
-    private void explosive(int xUnit, int yUnit, long timer) {
-
+    private void explosive(int xUnit, int yUnit, long timer, int size) {
+        play("Bomb_explosive");
         /* Thêm flame vào những ô bị bom nổ. */
         flames.add(new Flame(xUnit, yUnit, Sprite.explosion_centre, timer));
         for (int i = 0; i < 4; ++ i) {
             boolean flameIsBlocked = false;
-            for (int j = 1; j <= Bomber.FLAME_SIZE; ++ j) {
+            for (int j = 1; j <= size; ++ j) {
                 for (Entity e : environment) {
                     /* Gặp Wall hoặc Brick thì đánh dấu để dừng lại */
                     if (e.isCollidable()
@@ -167,7 +218,7 @@ public class Maze {
                     break;
                 }
 
-                if (j < Bomber.FLAME_SIZE) {
+                if (j < size) {
                     flames.add(new Flame(xUnit + Entity.moveX.get(i) * j,
                             yUnit + Entity.moveY.get(i) * j, Sprite.explosion_middle.get(i), timer));
                 } else {
@@ -195,19 +246,19 @@ public class Maze {
     }
 
     /** Xử lí kích nổ bom. **/
-    private void bombProcess(long timer) {
+    private void bombProcess(long timer, int size) {
         /* Cho nổ những quả bom đã hết thời gian. */
         if (!bombs.isEmpty()) {
             for (Bomb b : bombs) {
                 if (b.detonated(timer)) {
+                    play("Bomb_explosive");
                     int x = b.getXUnit();
                     int y = b.getYUnit();
                     flames.add(new Flame(x, y, Sprite.explosion_centre, timer));
-                    explosive(x, y, timer);
+                    explosive(x, y, timer, size);
                     players.get(0).addBomb();
                 }
             }
-
             bombs.removeIf(b -> b.detonated(timer));
         }
     }
@@ -226,6 +277,7 @@ public class Maze {
                 for (GameCharacter g : enemies) {
                     if (b.collideWith(g)) {
                         b.setBroken(Sprite.bomber_dead, timer);
+                        play("08_Life Lost");
                     }
                 }
             }

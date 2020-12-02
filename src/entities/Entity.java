@@ -29,6 +29,9 @@ public abstract class Entity {
     protected double realHeight;
     protected boolean collidable;
     protected boolean destructible;
+    protected boolean isBombItem = false;
+    protected boolean isFlameItem = false;
+    protected boolean isSpeedItem = false;
     protected boolean isDoomed = false;
     protected long destroyedTimer;
 
@@ -71,6 +74,18 @@ public abstract class Entity {
 
     public boolean notDoomedYet() {
         return !isDoomed;
+    }
+
+    public boolean isBombItem () {
+        return isBombItem;
+    }
+
+    public boolean isFlameItem () {
+        return isFlameItem;
+    }
+
+    public boolean isSpeedItem () {
+        return isSpeedItem;
     }
 
     public void render(GraphicsContext gc) {

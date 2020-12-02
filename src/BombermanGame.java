@@ -1,3 +1,4 @@
+import entities.Bomber;
 import graphics.Sprite;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
@@ -43,7 +44,7 @@ public class BombermanGame extends Application {
     }
 
     private void switchLevel(int level) {
-        maze = new Maze(level, "03_StageTheme");
+        maze = new Maze(level);
         canvas = new Canvas(Sprite.SCALED_SIZE * Maze.WIDTH,
                 Sprite.SCALED_SIZE * Maze.HEIGHT);
         gc = canvas.getGraphicsContext2D();

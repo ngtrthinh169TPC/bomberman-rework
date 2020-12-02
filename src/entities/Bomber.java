@@ -8,17 +8,31 @@ public class Bomber extends GameCharacter {
 
     public static final double BOMBER_SPEED = 1.7;
     private final int BOMB_AMOUNT = 1;
-    public static final int FLAME_SIZE = 2;
+    public static final int FLAME_SIZE = 1;
     private int availableBomb = BOMB_AMOUNT;
+    private int flame_size = FLAME_SIZE;
 
     public Bomber(double x, double y, ArrayList<Sprite> sprites) {
         super(x, y, sprites);
         this.moveSpeed = BOMBER_SPEED;
     }
 
+
     @Override
     public void getDirection() {
         /* Bomber will not automatically move. */
+    }
+
+    public void update_speed() {
+        this.moveSpeed = BOMBER_SPEED * 2;
+    }
+
+    public void update_flame_size() {
+        this.flame_size = FLAME_SIZE * 2;
+    }
+
+    public int getFlame_size () {
+        return flame_size;
     }
 
     public boolean haveBomb() {

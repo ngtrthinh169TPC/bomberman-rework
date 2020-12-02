@@ -379,9 +379,27 @@ public class Sprite {
     |--------------------------------------------------------------------------
     | Powerup
     |--------------------------------------------------------------------------
-    public static Sprite powerup_bombs = new Sprite(DEFAULT_SIZE, 0, 10, SpriteSheet.tiles, 16, 16);
-    public static Sprite powerup_flames = new Sprite(DEFAULT_SIZE, 1, 10, SpriteSheet.tiles, 16, 16);
-    public static Sprite powerup_speed = new Sprite(DEFAULT_SIZE, 2, 10, SpriteSheet.tiles, 16, 16);
+     */
+
+    public static ArrayList<Sprite> powerup_bombs = new ArrayList<>(
+            Collections.singletonList(
+                    new Sprite(DEFAULT_SIZE, 0, 10, SpriteSheet.tiles, 16, 16)
+            )
+    );
+
+    public static ArrayList<Sprite> powerup_flames = new ArrayList<>(
+            Collections.singletonList(
+                    new Sprite(DEFAULT_SIZE, 1, 10, SpriteSheet.tiles, 16, 16)
+            )
+    );
+
+    public static ArrayList<Sprite> powerup_speed = new ArrayList<>(
+            Collections.singletonList(
+                    new Sprite(DEFAULT_SIZE, 2, 10, SpriteSheet.tiles, 16, 16)
+            )
+    );
+
+    /*
     public static Sprite powerup_wall_pass = new Sprite(DEFAULT_SIZE, 3, 10, SpriteSheet.tiles, 16, 16);
     public static Sprite powerup_detonator = new Sprite(DEFAULT_SIZE, 4, 10, SpriteSheet.tiles, 16, 16);
     public static Sprite powerup_bomb_pass = new Sprite(DEFAULT_SIZE, 5, 10, SpriteSheet.tiles, 16, 16);
