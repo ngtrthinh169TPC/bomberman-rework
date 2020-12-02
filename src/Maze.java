@@ -167,13 +167,8 @@ public class Maze {
 
         /* Xóa vật thể bị phá hủy bởi flame. */
         for (Flame f : flames) {
-            enemies.stream().filter(f::collideWith).forEach(g -> g.setDoomed(timer));
-            //players.stream().filter(f::collideWith).forEach(g -> g.setDoomed(timer));
-            for (GameCharacter g : enemies) {
-                if (f.collideWith(g)) {
-                    g.setBroken(Sprite.mob_dead, timer);
-                }
-            }
+            players.stream().filter(f::collideWith).forEach(b -> b.setBroken(Sprite.bomber_dead, timer));
+            enemies.stream().filter(f::collideWith).forEach(g -> g.setBroken(Sprite.mob_dead, timer));
         }
     }
 
