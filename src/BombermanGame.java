@@ -16,6 +16,7 @@ public class BombermanGame extends Application {
     private Stage stage;
 
     private final ArrayList<String> keyInput = new ArrayList<>();
+    private final int NUMBER_OF_LEVEL = 3;
 
     public static void main(String[] args) {
         Application.launch(BombermanGame.class);
@@ -34,7 +35,7 @@ public class BombermanGame extends Application {
             public void handle(long l) {
                 maze.update(keyInput, l);
                 maze.render(canvas, gc);
-                if (maze.levelStatus(l) == 1) {
+                if (maze.levelStatus() == 1) {
                     switchLevel(2);
                 }
             }

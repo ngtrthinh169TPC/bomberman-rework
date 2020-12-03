@@ -22,10 +22,16 @@ public class Maze {
     private final ArrayList<Grass> grasses = new ArrayList<>();
     private final ArrayList<Entity> blocks = new ArrayList<>();
     private final ArrayList<Bomb> bombs = new ArrayList<>();
-    private final ArrayList<Entity> entities = new ArrayList<>(); // Anything else
+    private final ArrayList<Item> items = new ArrayList<>(); // Anything else
     private final ArrayList<Flame> flames = new ArrayList<>();
 
     private MediaPlayer mediaPlayer;
+
+    private int gameStatus = 0;
+    /* 0 : Trò chơi đang chạy
+     * 1 : Bomber thắng
+     * 2 : Bomber mất 1 mạng
+     */
 
     /** Khởi tạo màn chơi. **/
     public Maze(int level, String audioFile) {
@@ -54,7 +60,7 @@ public class Maze {
                             blocks.add(new Brick(j, i, Sprite.brick));
                             break;
                         case 'x':
-                            entities.add(new Portal(j, i, Sprite.portal));
+                            items.add(new Portal(j, i, Sprite.portal, "PORTAL"));
                             blocks.add(new Brick(j, i, Sprite.brick));
                             break;
                         case 'p':
@@ -66,6 +72,9 @@ public class Maze {
                         case '2':
                             enemies.add(new Oneal(j, i, Sprite.oneal_left));
                             break;
+                        case 'f':
+                            items.add(new Item(j, i, Sprite.powerup_flames, "FLAME"));
+                            blocks.add(new Brick(j, i, Sprite.brick));
                         default:
                             break;
                     }
@@ -113,6 +122,8 @@ public class Maze {
 
             blocks.removeIf(e -> e.expired(timer));
             blocks.forEach(Entity::update);
+
+            itemProcess();
         } else {
             System.out.println("GAME OVER");
             System.exit(0);
@@ -124,7 +135,7 @@ public class Maze {
     public void render(Canvas canvas, GraphicsContext gc) {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         grasses.forEach(g -> g.render(gc));
-        entities.forEach(g -> g.render(gc));
+        items.forEach(g -> g.render(gc));
         blocks.forEach(g -> g.render(gc));
         bombs.forEach(g -> g.render(gc));
         flames.forEach(g -> g.render(gc));
@@ -133,15 +144,11 @@ public class Maze {
     }
 
     /** Return 0 nếu game đang chạy, return 1 nếu qua màn, return 2 nếu bomber thua. **/
-    public int levelStatus(long timer) {
-        if (enemies.isEmpty()) {
+    public int levelStatus() {
+        if (gameStatus != 0) {
             closeLevel();
-            return 1;
         }
-        if (player.expired(timer)) {
-            return 2;
-        }
-        return 0;
+        return gameStatus;
     }
 
     /** Xử lí bom nổ **/
@@ -244,6 +251,8 @@ public class Maze {
                     player.setBroken(Sprite.bomber_dead, timer);
                 }
             }
+        } else if (player.expired(timer)) {
+            gameStatus = 2;
         }
     }
 
@@ -257,6 +266,26 @@ public class Maze {
                 g.getDirection(player, blocks, bombs);
             }
         }
+    }
+
+    private void itemProcess() {
+        for (Item e : items) {
+            if (e.collideWith(player)) {
+                switch (e.getAbility()) {
+                    case "PORTAL":
+                        if (enemies.isEmpty()) {
+                            gameStatus = 1;
+                        }
+                        break;
+                    case "FLAME":
+                        Bomber.FLAME_SIZE ++;
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+        items.removeIf(e -> e.collideWith(player) && !e.getAbility().equals("PORTAL"));
     }
 
     /** Gọi hàm này khi hết màn chơi hiện tại. **/

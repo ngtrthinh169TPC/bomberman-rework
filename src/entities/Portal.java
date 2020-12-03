@@ -2,11 +2,9 @@ package entities;
 
 import graphics.Sprite;
 
-import java.util.ArrayList;
-
-public class Portal extends Entity {
-    public Portal(double x, double y, ArrayList<Sprite> sprites) {
-        super(x, y, sprites);
+public class Portal extends Item {
+    public Portal(double x, double y, Sprite sprite, String ability) {
+        super(x, y, sprite, ability);
     }
 
     @Override

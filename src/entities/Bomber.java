@@ -8,7 +8,7 @@ public class Bomber extends GameCharacter {
 
     public static final double BOMBER_SPEED = 1.8;
     private final int BOMB_AMOUNT = 1;
-    public static final int FLAME_SIZE = 2;
+    public static int FLAME_SIZE = 1;
     private int availableBomb = BOMB_AMOUNT;
 
     public Bomber(double x, double y, ArrayList<Sprite> sprites) {

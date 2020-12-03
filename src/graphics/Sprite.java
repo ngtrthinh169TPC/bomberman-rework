@@ -104,11 +104,8 @@ public class Sprite {
 
     /* Board objects **/
     /* ----------------------------------------------------------- **/
-    public static ArrayList<Sprite> portal = new ArrayList<>(
-            Collections.singletonList(
-                    new Sprite(DEFAULT_SIZE, 4, 0, SpriteSheet.tiles, 14, 14)
-            )
-    );
+    public static Sprite portal = new Sprite(DEFAULT_SIZE, 4, 0, SpriteSheet.tiles, 14, 14);
+
     public static ArrayList<Sprite> wall = new ArrayList<>(
             Collections.singletonList(
                     new Sprite(DEFAULT_SIZE, 5, 0, SpriteSheet.tiles, 16, 16)
@@ -379,6 +376,7 @@ public class Sprite {
     |--------------------------------------------------------------------------
     | Powerup
     |--------------------------------------------------------------------------
+    */
     public static Sprite powerup_bombs = new Sprite(DEFAULT_SIZE, 0, 10, SpriteSheet.tiles, 16, 16);
     public static Sprite powerup_flames = new Sprite(DEFAULT_SIZE, 1, 10, SpriteSheet.tiles, 16, 16);
     public static Sprite powerup_speed = new Sprite(DEFAULT_SIZE, 2, 10, SpriteSheet.tiles, 16, 16);
@@ -386,6 +384,4 @@ public class Sprite {
     public static Sprite powerup_detonator = new Sprite(DEFAULT_SIZE, 4, 10, SpriteSheet.tiles, 16, 16);
     public static Sprite powerup_bomb_pass = new Sprite(DEFAULT_SIZE, 5, 10, SpriteSheet.tiles, 16, 16);
     public static Sprite powerup_flame_pass = new Sprite(DEFAULT_SIZE, 6, 10, SpriteSheet.tiles, 16, 16);
-
-     */
 }
