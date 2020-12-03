@@ -75,6 +75,11 @@ public class Maze {
                         case 'f':
                             items.add(new Item(j, i, Sprite.powerup_flames, "FLAME"));
                             blocks.add(new Brick(j, i, Sprite.brick));
+                            break;
+                        case 'b':
+                            items.add(new Item(j, i, Sprite.powerup_bombs, "BOMBS"));
+                            blocks.add(new Brick(j, i, Sprite.brick));
+                            break;
                         default:
                             break;
                     }
@@ -279,6 +284,9 @@ public class Maze {
                         break;
                     case "FLAME":
                         Bomber.FLAME_SIZE ++;
+                        break;
+                    case "BOMBS":
+                        player.bombsPowerup();
                         break;
                     default:
                         break;

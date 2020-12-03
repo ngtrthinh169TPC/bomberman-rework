@@ -6,8 +6,8 @@ import java.util.ArrayList;
 
 public class Bomber extends GameCharacter {
 
-    public static final double BOMBER_SPEED = 1.8;
-    private final int BOMB_AMOUNT = 1;
+    public static final double BOMBER_SPEED = 2.8;
+    private static int BOMB_AMOUNT = 1;
     public static int FLAME_SIZE = 1;
     private int availableBomb = BOMB_AMOUNT;
 
@@ -35,10 +35,18 @@ public class Bomber extends GameCharacter {
         return availableBomb > 0;
     }
 
-    public void dropBomb() {
+    public boolean dropBomb(ArrayList<Bomb> bombs) {
         if (availableBomb > 0) {
+            for (Bomb b : bombs) {
+                if (b.getXUnit() == this.getXUnit() && b.getYUnit() == this.getYUnit()) {
+                    return false;
+                }
+            }
+            System.out.println(availableBomb);
             availableBomb --;
+            return true;
         }
+        return false;
     }
 
     public void addBomb() {
@@ -65,11 +73,17 @@ public class Bomber extends GameCharacter {
                 break;
             case "SPACE":
                 if (this.haveBomb()) {
-                    this.dropBomb();
-                    bombs.add(new Bomb(this.getXUnit(), this.getYUnit(), Sprite.bomb, timer));
+                    if (this.dropBomb(bombs)) {
+                        bombs.add(new Bomb(this.getXUnit(), this.getYUnit(), Sprite.bomb, timer));
+                    }
                 }
             default:
                 break;
         }
+    }
+
+    public void bombsPowerup() {
+        this.availableBomb ++;
+        BOMB_AMOUNT ++;
     }
 }

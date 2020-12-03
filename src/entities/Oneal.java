@@ -102,9 +102,9 @@ public class Oneal extends GameCharacter {
                         direction = random.nextInt(4);
                         if (!(this.currentDirection == direction)) {
                             if (direction % 2 == 0) {
-                                this.getNextImg(Sprite.ballom_right, direction);
+                                this.getNextImg(Sprite.oneal_right, direction);
                             } else {
-                                this.getNextImg(Sprite.ballom_left, direction);
+                                this.getNextImg(Sprite.oneal_left, direction);
                             }
                             this.currentDirection = direction;
                             this.velocityUpdate(moveX.get(direction), moveY.get(direction));
