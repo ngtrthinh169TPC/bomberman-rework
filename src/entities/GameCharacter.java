@@ -7,14 +7,13 @@ import java.util.ArrayList;
 public abstract class GameCharacter extends Entity {
 
     private static final int WALK_TIME = 6;
-    //protected static final int DEAD_TIME = 3 * WALK_TIME;
     protected double moveSpeed = 0;
     protected double rightVelocity;
     protected double downVelocity;
 
     private int frameTimer = 0;
     private int frameNumber = 0;
-    private String currentDirection = "RIGHT";
+    protected int currentDirection = 0;
 
     public GameCharacter(double x, double y, ArrayList<Sprite> sprites) {
         super(x, y, sprites);
@@ -24,7 +23,7 @@ public abstract class GameCharacter extends Entity {
         this.destructible = true;
     }
 
-    public abstract void getDirection();
+    public abstract void getDirection(Bomber player, ArrayList<Entity> blocks, ArrayList<Bomb> bombs);
 
     @Override
     public void update() {
@@ -36,8 +35,8 @@ public abstract class GameCharacter extends Entity {
     }
 
     /** Chuyển sang sprite tiếp theo để tạo hiệu ứng di chuyển. **/
-    public void getNextImg(ArrayList<Sprite> sprites, String direction) {
-        if (direction.equals(currentDirection)) {
+    public void getNextImg(ArrayList<Sprite> sprites, int direction) {
+        if (direction == currentDirection) {
             this.frameTimer ++;
             if (this.frameTimer >= WALK_TIME) {
                 this.frameTimer %= WALK_TIME;
@@ -45,11 +44,12 @@ public abstract class GameCharacter extends Entity {
                 // 3 is the number of sprites for an entity
             }
         } else {
+            this.sprites = sprites;
             this.frameTimer = 0;
             this.frameNumber = 0;
             this.currentDirection = direction;
         }
-        this.img = sprites.get(frameNumber).getFxImage();
+        this.img = this.sprites.get(frameNumber).getFxImage();
     }
 
     /** Cập nhật vận tốc, aka hướng di chuyển. **/

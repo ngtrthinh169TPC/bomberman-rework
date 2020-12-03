@@ -17,9 +17,10 @@ public class Maze {
             Arrays.asList("LEFT", "RIGHT", "UP", "DOWN", "SPACE")
     );
 
-    private final ArrayList<Bomber> players = new ArrayList<>();
+    private Bomber player = new Bomber(0, 0, Sprite.bomber_right);
     private final ArrayList<GameCharacter> enemies = new ArrayList<>();
-    private final ArrayList<Entity> environment = new ArrayList<>();
+    private final ArrayList<Grass> grasses = new ArrayList<>();
+    private final ArrayList<Entity> blocks = new ArrayList<>();
     private final ArrayList<Bomb> bombs = new ArrayList<>();
     private final ArrayList<Entity> entities = new ArrayList<>(); // Anything else
     private final ArrayList<Flame> flames = new ArrayList<>();
@@ -44,20 +45,20 @@ public class Maze {
             for (int i = 0; i < HEIGHT; ++i) {
                 currentLine = sc.nextLine();
                 for (int j = 0; j < WIDTH; ++j) {
-                    environment.add(new Grass(j, i, Sprite.grass));
+                    grasses.add(new Grass(j, i, Sprite.grass));
                     switch (currentLine.charAt(j)) {
                         case '#':
-                            environment.add(new Wall(j, i, Sprite.wall));
+                            blocks.add(new Wall(j, i, Sprite.wall));
                             break;
                         case '*':
-                            environment.add(new Brick(j, i, Sprite.brick));
+                            blocks.add(new Brick(j, i, Sprite.brick));
                             break;
                         case 'x':
                             entities.add(new Portal(j, i, Sprite.portal));
-                            environment.add(new Brick(j, i, Sprite.brick));
+                            blocks.add(new Brick(j, i, Sprite.brick));
                             break;
                         case 'p':
-                            players.add(new Bomber(j, i, Sprite.bomber_right));
+                            player = new Bomber(j, i, Sprite.bomber_right);
                             break;
                         case '1':
                             enemies.add(new Ballom(j, i, Sprite.ballom_left));
@@ -89,7 +90,7 @@ public class Maze {
 
     /** Cập nhật trạng thái màn chơi. **/
     public void update(ArrayList<String> keyInput, long timer) {
-        if (!players.get(0).expired(timer)) {
+        if (!player.expired(timer)) {
             inputProcess(keyInput, timer);
             bomberUpdate(timer);
             enemiesUpdate(timer);
@@ -100,10 +101,8 @@ public class Maze {
 
             /* Đốt bỏ m* mấy con đứng trong vùng lửa. */
             for (Flame flame : flames) {
-                for (Bomber b : players) {
-                    if (b.notDoomedYet() && flame.collideWith(b)) {
-                        b.setBroken(Sprite.bomber_dead, timer);
-                    }
+                if (player.notDoomedYet() && flame.collideWith(player)) {
+                    player.setBroken(Sprite.bomber_dead, timer);
                 }
                 for (GameCharacter g : enemies) {
                     if (g.notDoomedYet() && flame.collideWith(g)) {
@@ -112,8 +111,8 @@ public class Maze {
                 }
             }
 
-            environment.removeIf(e -> e.expired(timer));
-            environment.forEach(Entity::update);
+            blocks.removeIf(e -> e.expired(timer));
+            blocks.forEach(Entity::update);
         } else {
             System.out.println("GAME OVER");
             System.exit(0);
@@ -124,11 +123,12 @@ public class Maze {
     /** Render mọi thứ lên màn hình. **/
     public void render(Canvas canvas, GraphicsContext gc) {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        environment.forEach(g -> g.render(gc));
+        grasses.forEach(g -> g.render(gc));
         entities.forEach(g -> g.render(gc));
+        blocks.forEach(g -> g.render(gc));
         bombs.forEach(g -> g.render(gc));
         flames.forEach(g -> g.render(gc));
-        players.forEach(g -> g.render(gc));
+        player.render(gc);
         enemies.forEach(g -> g.render(gc));
     }
 
@@ -138,7 +138,7 @@ public class Maze {
             closeLevel();
             return 1;
         }
-        if (players.get(0).expired(timer)) {
+        if (player.expired(timer)) {
             return 2;
         }
         return 0;
@@ -152,7 +152,7 @@ public class Maze {
         for (int i = 0; i < 4; ++ i) {
             boolean flameIsBlocked = false;
             for (int j = 1; j <= Bomber.FLAME_SIZE; ++ j) {
-                for (Entity e : environment) {
+                for (Entity e : blocks) {
                     /* Gặp Wall hoặc Brick thì đánh dấu để dừng lại */
                     if (e.isCollidable()
                             && e.getXUnit() == xUnit + Entity.moveX.get(i) * j
@@ -185,20 +185,20 @@ public class Maze {
         /* Lọc input không xử lí */
         keyInput.removeIf(s -> !availableCommand.contains(s));
         if (keyInput.isEmpty()) {
-            players.get(0).velocityUpdate(0, 0);
+            player.velocityUpdate(0, 0);
             return;
         }
 
         /* Xử lí input liên quan đến hành động của bomber */
         String action = keyInput.get(keyInput.size() - 1);
 
-        players.get(0).control(action, bombs, timer);
+        player.control(action, bombs, timer);
     }
 
     /** Xử lí kích nổ bom. **/
     private void bombProcess(long timer) {
         for (Bomb b : bombs) {
-            if (!b.collideWith(players.get(0))) {
+            if (!b.collideWith(player)) {
                 b.setCollidable();
             }
         }
@@ -211,7 +211,7 @@ public class Maze {
                     int y = b.getYUnit();
                     flames.add(new Flame(x, y, Sprite.explosion_centre, timer));
                     explosive(x, y, timer);
-                    players.get(0).addBomb();
+                    player.addBomb();
                 }
             }
 
@@ -221,29 +221,27 @@ public class Maze {
 
     /** Update vị trí mới cho Bomber. **/
     private void bomberUpdate(long timer) {
-        for (Bomber b : players) {
-            b.update();
-            /* Nếu Bomber chưa toang. */
-            if (players.get(0).notDoomedYet()) {
-                for (Entity e : environment) {
-                    if (e.isCollidable()) {
-                        if (b.collideWith(e)){
-                            b.snapCollision(e);
-                        }
+        player.update();
+        /* Nếu Bomber chưa toang. */
+        if (player.notDoomedYet()) {
+            for (Entity e : blocks) {
+                if (e.isCollidable()) {
+                    if (player.collideWith(e)){
+                        player.snapCollision(e);
                     }
                 }
-                for (Bomb bomb : bombs) {
-                    if (bomb.isCollidable()) {
-                        if (b.collideWith(bomb)) {
-                            b.snapCollision(bomb);
-                        }
+            }
+            for (Bomb bomb : bombs) {
+                if (bomb.isCollidable()) {
+                    if (player.collideWith(bomb)) {
+                        player.snapCollision(bomb);
                     }
                 }
+            }
 
-                for (GameCharacter g : enemies) {
-                    if (b.collideWith(g)) {
-                        b.setBroken(Sprite.bomber_dead, timer);
-                    }
+            for (GameCharacter g : enemies) {
+                if (player.collideWith(g)) {
+                    player.setBroken(Sprite.bomber_dead, timer);
                 }
             }
         }
@@ -256,21 +254,7 @@ public class Maze {
             g.update();
             /* Nếu enemy này chưa toang. */
             if (g.notDoomedYet()) {
-                for (Entity e : environment) {
-                    if (e.isCollidable()) {
-                        if (g.collideWith(e)){
-                            g.snapCollision(e);
-                            g.getDirection();
-                        }
-                    }
-                }
-                for (Bomb bomb : bombs) {
-                    if (bomb.isCollidable()) {
-                        if (g.collideWith(bomb)) {
-                            g.snapCollision(bomb);
-                        }
-                    }
-                }
+                g.getDirection(player, blocks, bombs);
             }
         }
     }

@@ -27,7 +27,7 @@ public class Bomber extends GameCharacter {
     }
 
     @Override
-    public void getDirection() {
+    public void getDirection(Bomber player, ArrayList<Entity> blocks, ArrayList<Bomb> bombs) {
         /* Bomber will not automatically move. */
     }
 
@@ -49,19 +49,19 @@ public class Bomber extends GameCharacter {
         switch (action) {
             case "LEFT":
                 this.velocityUpdate(-1, 0);
-                this.getNextImg(Sprite.bomber_left, action);
+                this.getNextImg(Sprite.bomber_left, 1);
                 break;
             case "RIGHT":
                 this.velocityUpdate(1, 0);
-                this.getNextImg(Sprite.bomber_right, action);
+                this.getNextImg(Sprite.bomber_right, 0);
                 break;
             case "UP":
                 this.velocityUpdate(0, -1);
-                this.getNextImg(Sprite.bomber_up, action);
+                this.getNextImg(Sprite.bomber_up, 3);
                 break;
             case "DOWN":
                 this.velocityUpdate(0, 1);
-                this.getNextImg(Sprite.bomber_down, action);
+                this.getNextImg(Sprite.bomber_down, 2);
                 break;
             case "SPACE":
                 if (this.haveBomb()) {

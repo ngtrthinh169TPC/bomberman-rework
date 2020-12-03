@@ -6,7 +6,6 @@ import javafx.scene.image.Image;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 public abstract class Entity {
     public static final ArrayList<Integer> moveX = new ArrayList<>(
@@ -39,7 +38,7 @@ public abstract class Entity {
 
     private int frameTimer = 0;
     private int frameNumber = 0;
-    private ArrayList<Sprite> sprites;
+    protected ArrayList<Sprite> sprites;
 
     /** Constructor that converts unit coordinate into canvas coordinate **/
     public Entity(double xUnit, double yUnit, ArrayList<Sprite> sprites) {
